@@ -1,0 +1,77 @@
+# <Ticket> — <one line: what should be true when this is done>
+
+This is the one file you write yourself. Everything else gets generated from it, so five minutes here saves an hour
+later. Rough is fine. Claude will ask about what's missing. Vague is not: "improve the login flow" produces a plan
+you'll throw away.
+
+Delete the guidance lines as you fill it in.
+
+---
+
+## Description
+
+<For a bug: what happens, and where. For a feature: what someone should be able to do that they can't today. Two or
+three sentences.>
+
+### Steps to Reproduce
+
+<For a bug, this is the most valuable thing in the file. Exact steps and exact inputs. For a feature: what the user
+does.>
+
+1. <e.g. Log in as a user with no saved cards>
+2. <e.g. Add anything to the basket, go to checkout>
+
+### Actual Behavior
+
+<What happens now. Paste an error message or a stack trace whole: don't summarise it. E.g. blank page, and the
+console shows TypeError: cannot read properties of undefined (reading 'last4').>
+
+### Expected Behavior
+
+<What should happen instead. E.g. the "add a payment method" prompt.>
+
+## Done when
+
+<Things someone else could check without asking you. Two or three is usually enough.>
+
+- [ ] <e.g. checkout with no saved card shows the add-payment prompt>
+- [ ] <e.g. a test covers the no-card case>
+
+## Important
+
+<What Claude should keep in mind for this ticket. Keep the lines that apply, and add this ticket's own facts. Facts
+true on every ticket belong in your docs/ book instead, so you don't repeat them here.>
+
+- Read the pages in the projects folder's `docs/` about <area, e.g. Analytics>.
+- <Which app owns the flow, and which apps show it, e.g. "the checkout app owns the payment step; the shop renders
+  it">.
+- Ask me when you're stuck, or when two readings lead to different work.
+- Keep `progress.md` up to date as you go, and tick off each step when it's done.
+- End with a short recap: what changed, what's left, and what I should check.
+
+## Links
+
+- Ticket: <url>
+- Design / spec: <url>
+- Related PR or past investigation: <url or investigations/<app>/OLD-99/>
+
+## What I already know
+
+<Anything that saves reading time: which file you think it's in, something you already ruled out, a related change
+that went in last week, who wrote it originally. Say if you're unsure. "I think it's in the checkout hook but
+haven't checked" is useful, and it's clearly marked as a guess.>
+
+## Out of scope
+
+<What you don't want touched. This is what stops the plan growing into a refactor.>
+
+## Changes
+
+<Leave empty until the ticket actually changes. Then add a dated line per change, and keep the old wording. The old
+wording lets a reviewer tell the plan was right for the old requirement, not wrong for the new one.>
+
+```
+2026-08-12 — new: guests can check out without an account.
+             was: sign-in required before the basket page.
+             source: <link, or who said it>
+```

@@ -1,0 +1,12 @@
+.DS_Store
+
+# Claude Code: personal files and worktrees
+CLAUDE.local.md
+.claude/settings.local.json
+.claude/worktrees/
+
+# Built from changelog/ by npm run changelog
+CHANGELOG.md
+
+# npm
+node_modules/

@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git worktree add *)"
+    ],
+    "ask": [
+      "Artifact",
+      "Bash(git merge *)",
+      "Bash(git -C * merge *)",
+      "Bash(git tag *)",
+      "Bash(git -C * tag *)",
+      "Bash(git push *)",
+      "Bash(git -C * push *)",
+      "Bash(git branch -d *)",
+      "Bash(git branch -D *)",
+      "Bash(git branch --delete *)",
+      "Bash(git branch -f *)",
+      "Bash(git branch -M *)",
+      "Bash(git -C * branch *)",
+      "Bash(git checkout *)",
+      "Bash(git -C * checkout *)",
+      "Bash(git switch *)",
+      "Bash(git -C * switch *)",
+      "Bash(git reset --hard *)",
+      "Bash(git -C * reset --hard *)",
+      "Bash(git rebase *)",
+      "Bash(git -C * rebase *)",
+      "Bash(git clean *)",
+      "Bash(git stash drop *)",
+      "Bash(git worktree remove *)",
+      "Bash(git worktree prune *)"
+    ]
+  }
+}

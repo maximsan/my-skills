@@ -1,0 +1,40 @@
+<!-- claude-rules: app-notes -->
+Personal notes for Claude about this app. Git ignores this file for your copy only (see `.git/info/exclude`).
+If this project has its own `CLAUDE.md`, don't repeat anything it already says.
+
+# <Project name>
+
+One paragraph: what this project does, who uses it, what it owns.
+
+**Only facts about this repo go here.** How Claude should work is already in `projects/CLAUDE.md`, one folder up.
+It applies here automatically, so don't repeat it. Keep this file under 40 lines. A long one gets skimmed, and then
+nothing in it gets followed. Anything longer belongs in `docs/ai/`.
+
+## Rules for this app
+
+<stack rules>
+
+## Commands
+
+```
+<build>
+<run one test>       the command that saves the most time — put the real one here
+<run all tests>
+<type-check>         e.g. npx tsc --noEmit — must pass, not just be reported
+<lint>               e.g. npx eslint . --max-warnings 0
+<format>
+```
+
+If this app is mid-adoption of stricter TypeScript, say which stage it's at. Otherwise the next session
+re-litigates it. See `templates/typescript-setup.md`.
+
+## Where things are
+
+- `<folder>` — <what's in it>
+- `<folder>` — <what's in it>
+
+## Things people get wrong here
+
+- <the two or three mistakes a competent newcomer makes>
+- <anything that looks like a bug but isn't>
+- <the slow or flaky test, and what to do about it>

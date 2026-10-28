@@ -1,0 +1,29 @@
+name: check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Lint, types and the changelog are the same on every machine, so the full check runs once.
+          - os: ubuntu-latest
+            command: npm run check
+          # The tests make junctions, read paths and print fix commands, which differ on Windows, where the apps run.
+          # The checkout keeps Git for Windows' default line endings, as a real Windows clone has.
+          - os: windows-latest
+            command: npm test
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+          cache: npm
+      - run: npm ci
+      - run: ${{ matrix.command }}

@@ -48,6 +48,14 @@ Rules load on every turn, so each line costs attention on every task. Before add
   nothing on the days X doesn't load. The procedure lives in the skill. The trigger and the first action stay here.
 - **If a topic needs more room, make it a skill** that loads when that work comes up.
 
+### The workflow rules
+
+`rules/workflows/` holds one file per way of running a task. Where a workflow file differs from the common rules, it
+wins. `claude-rules setup` loads `task-flow.md`. Nothing loads `github-flow.md` yet.
+
+A rule goes here when it's true for one workflow only, or when skills depend on its exact text. Keep each file under
+200 lines. A workflow file may name the folders that workflow uses.
+
 ### The stack files
 
 `rules/react.md` and `rules/microfrontend.md` load on every turn of every task in a matching app, so what's in

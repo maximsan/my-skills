@@ -12,13 +12,13 @@ own choices. Everything needed is in the files below.
 Review this as a stranger's code. Defend none of it. The author's account of what they did is not evidence: check
 every claim in the files.
 
-Read, in this order, from the task folder the common rules define:
+Read, in this order, from the task folder the workflow rules define:
 
 1. `task.md` — what was actually asked for
 2. `plan.md` — what was approved, including how each step would be checked
 3. `progress.md` — what they flagged, assumed, or abandoned
 4. `git diff <commit-from-plan-header>..HEAD` — what actually changed
-5. The reading under *Start of every task* in the common rules. Use the `NOTES.md` entries for this area to tell a
+5. The reading under *Start of every task* in the workflow rules. Use the `NOTES.md` entries for this area to tell a
    convention breach from a style preference, and a deliberate oddity from a bug
 
 ---

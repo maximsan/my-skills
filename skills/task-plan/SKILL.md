@@ -7,13 +7,13 @@ description: This skill should be used when the user asks to "plan this", or ask
 
 Write a step-by-step plan. **Plan only. Implement nothing.**
 
-Task file: the path the user gave, or `task.md` in the task folder, as the common rules define it.
+Task file: the path the user gave, or `task.md` in the task folder, as the workflow rules define it.
 
 ---
 
 ## Step 1 — Orient
 
-Do the reading under *Start of every task* in the common rules. Print the three lines at the start, plus one:
+Do the reading under *Start of every task* in the workflow rules. Print the three lines at the start, plus one:
 
 ```
 Commit:  <short sha> (<branch>)
@@ -104,7 +104,7 @@ Tests are the automated coverage that keeps it right. Don't merge them.
 
 ## Step 6 — Write plan.md
 
-Save it in the task file's folder. If that can't be worked out, use the task folder from the common rules, with a short
+Save it in the task file's folder. If that can't be worked out, use the task folder from the workflow rules, with a short
 slug for the ticket, and say which slug was picked.
 
 If a `plan.md` is already there, **update it** rather than replacing it. Keep finished items and recorded results.

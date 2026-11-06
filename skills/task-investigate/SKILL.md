@@ -8,13 +8,13 @@ description: This skill should be used when the user asks to "investigate" a tas
 Find out how the code actually works today, and stop there. **The output is a description:** the plan, the code
 and any solution come later, in `task-plan`.
 
-Task file: the path the user gave, or `task.md` in the task folder, as the common rules define it.
+Task file: the path the user gave, or `task.md` in the task folder, as the workflow rules define it.
 
 ---
 
 ## Step 1 — Orient
 
-Do the reading under *Start of every task* in the common rules, then read the task file. Treat earlier work in the task
+Do the reading under *Start of every task* in the workflow rules, then read the task file. Treat earlier work in the task
 folder as input, not something to redo. If the task file is missing or unreadable, stop and ask. Don't guess what it
 says.
 

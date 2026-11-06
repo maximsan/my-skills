@@ -33,6 +33,7 @@ task.md ──▶ task-investigate ──▶ findings.md
 | `rework` | Works out what to keep and throw away when finished work turns out wrong | Approve the triage |
 | `why-this-exists` | Works out why code is there before it's deleted | Answer if it can't tell |
 | `rule-author` | Writes and reviews rules and skills | Approve them |
+| `design-preferences` | Applies the visual preferences to a page | Review the page |
 | `create` | Copies the nearest existing file of its kind, showing where each convention came from | Read the table |
 | `write-tests` | Writes tests for code that already works | Check what it chose *not* to cover |
 
@@ -127,6 +128,7 @@ Each kind of rule has its own home:
 | Kind | Example | Lives in |
 |---|---|---|
 | **How to work** — applies to every project | "read the code, don't guess it" | `rules/common.md` |
+| **How a task runs** — applies to one way of working | "print the three lines first" | `rules/workflows/task-flow.md` |
 | **How we write React** — applies to all your React projects | "no data fetching inside useEffect" | `rules/react.md` |
 | **How microfrontends behave** — applies to all your federated apps | "nothing on `window`" | `rules/microfrontend.md` |
 | **How we type things** — applies to all your TypeScript | "parse at the boundary, don't assert past it" | `rules/typescript.md` |
@@ -257,7 +259,7 @@ files. Linking here rather than in `~/.claude/skills` keeps the skills out of yo
 kept out of git, like your notes.
 
 Type `/debug` to use one, or let it load itself from its description. **Don't count on it loading itself** — the
-routing lines at the top of `rules/common.md` force it to list which skills it picked and rejected at the start of
+routing lines at the top of `rules/workflows/task-flow.md` force it to list which skills it picked and rejected at the start of
 every task, which works either way.
 
 Slash commands (`.claude/commands/`) still exist and still work. They're just a worse fit here: a command only runs

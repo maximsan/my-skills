@@ -153,7 +153,7 @@ following [`feedback-review.md`](feedback-review.md). With no such line yet, cou
 
 ### Proposed rules: only for repeats
 
-Suggest a rule only for a repeat (see *Suggest new rules and skills* in the common rules), with the evidence. Say
+Suggest a rule only for a repeat (see *Suggest new rules and skills* in the workflow rules), with the evidence. Say
 whether it's specific to this project or true everywhere. Write it with the `rule-author` skill.
 
 ## Step 6 — Propose, wait, write

@@ -49,19 +49,9 @@ Decided:
 
 ### Next steps, in order
 
-1. **Settle the shared rules.** Review the differences between the Mac's global rules, its Codex rules and `rules/common.md`. Load `rule-author` before writing them.
-   - Agents ask whenever a step could go more than one way, and never pick silently.
-   - The detailed writing rules stay in the shared rules, so every agent loads them.
-   - Decisions go in the issue or PR body. An agent comments only when a comment is really needed.
-   - Any work that changes a repo gets its own worktree. Reading and answering need none.
-   - Each machine keeps its own rule for small problems nearby: the Mac fixes them in the open branch, and Windows lists them in its Backlog.
-   - An example may be made up if it's clearly labelled. An invented result, measurement or scenario is never presented as real.
-   - Before finishing, an agent pushes every commit worth keeping to GitHub, and treats `/private/tmp` as disposable.
-   - Glossaries and comment syntax follow each project. Checks match the size of the risk. Design and provider preferences move into their own skills.
-2. **Split the rules.** `rules/common.md` keeps what both machines share. A workflow file for each machine takes the rest, including this file's Windows workflow rules, unchanged.
-3. **Bring in the Mac's skills and hooks.** They sit outside git today: `check-prose`, `disk-audit`, `pr-description`, `repo-checks`, `review-and-fix` and the hooks. Read each for private details first, because this repo is public. Personal settings files stay out.
-4. **Write the install script and the check.** Run the hook tests from `npm run check`.
-5. **Prove each agent loads the setup.** A fresh session in each agent must show the expected rules and skills. Back up the current files first.
+1. **Bring in the Mac's skills and hooks.** They sit outside git today: `check-prose`, `disk-audit`, `pr-description`, `repo-checks`, `review-and-fix` and the hooks. Read each for private details first, because this repo is public. Personal settings files stay out.
+2. **Write the install script and the check.** Run the hook tests from `npm run check`.
+3. **Prove each agent loads the setup.** A fresh session in each agent must show the expected rules and skills. Back up the current files first.
 
 ### Postponed
 
@@ -70,11 +60,19 @@ Each item waits for the steps above, unless it says otherwise.
 **Windows**
 
 - Install the shared setup on Windows. The rules here must keep working on the Claude Code version named in `CONTRIBUTING.md`.
+- Run `claude-rules setup` on the Windows machine after pulling, so it loads `rules/workflows/task-flow.md`.
+- Decide whether Windows also makes each repo change in its own git worktree. Its skills work directly in the app's folder today.
+- Decide whether Windows moves to asking first. Today it picks a default and marks it `⚠️ Assumed:`, and its `rework` and `task-learn` skills search for that marker.
 
 **Other repos**
 
 - Merge `devkit` into this repo as a monorepo, keeping its history. Combine its `devclean` command with `disk-audit`, which overlap.
 - Merge `my-dotfiles` the same way. Decide first what stays private, and commit or drop the changes waiting in its `.zshrc` and `.gitconfig`. `~/.zshenv` isn't tracked anywhere yet.
+
+**The Mac's global rules**
+
+- Shrink `~/.claude/CLAUDE.md` to pointers at `rules/common.md` and `rules/workflows/github-flow.md`. Personal lines, such as the owner's language, stay in that file.
+- Remove the Cloudflare rule from that file once a provider skill covers it. Move the design rules out at the same time, because `design-preferences` now holds them.
 
 **Agent gaps**
 

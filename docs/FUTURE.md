@@ -52,7 +52,12 @@ Decided:
 1. **Settle the shared rules.** Review the differences between the Mac's global rules, its Codex rules and `rules/common.md`. Load `rule-author` before writing them.
    - Agents ask whenever a step could go more than one way, and never pick silently.
    - The detailed writing rules stay in the shared rules, so every agent loads them.
-   - The rest is still open.
+   - Decisions go in the issue or PR body. An agent comments only when a comment is really needed.
+   - Any work that changes a repo gets its own worktree. Reading and answering need none.
+   - Each machine keeps its own rule for small problems nearby: the Mac fixes them in the open branch, and Windows lists them in its Backlog.
+   - An example may be made up if it's clearly labelled. An invented result, measurement or scenario is never presented as real.
+   - Before finishing, an agent pushes every commit worth keeping to GitHub, and treats `/private/tmp` as disposable.
+   - Glossaries and comment syntax follow each project. Checks match the size of the risk. Design and provider preferences move into their own skills.
 2. **Split the rules.** `rules/common.md` keeps what both machines share. A workflow file for each machine takes the rest, including this file's Windows workflow rules, unchanged.
 3. **Bring in the Mac's skills and hooks.** They sit outside git today: `check-prose`, `disk-audit`, `pr-description`, `repo-checks`, `review-and-fix` and the hooks. Read each for private details first, because this repo is public. Personal settings files stay out.
 4. **Write the install script and the check.** Run the hook tests from `npm run check`.
@@ -77,9 +82,14 @@ Each item waits for the steps above, unless it says otherwise.
 - Cursor's app was removed from the Mac, so its hooks are untested. When it's back, test them.
 - **Owner's note:** paste this into Cursor under Customize → Rules, because its global rules live in that settings screen:
 
-  > Keep agent work in a git worktree whose origin is the real GitHub repository, and push every commit worth keeping before you finish. Use `/private/tmp` only for logs and scratch files that can be lost, because macOS may clear it on restart.
+  > Before you finish, push every commit worth keeping to GitHub. Treat `/private/tmp` as disposable.
 
-- The review, `git add` and zsh gates run only in Claude Code. The prose gate checks only `gh` issue and PR bodies in the other agents, and not questions or file edits.
+- The review gate runs in Claude Code, Codex and OpenCode. Add it to Cursor once the app is back.
+- Rename or retire existing `codex/` branches. The branch-name rule only stops new ones.
+- Track `~/.git-hooks` in git, because the branch-name rule and attribution stripping live there, outside any repo.
+- Replace the old Codex command-line install. It can't read the current config, so `codex` fails in a terminal.
+- Test `review-and-fix` in Codex and OpenCode, because it depends on each agent's sub-agents.
+- The `git add` and zsh gates run only in Claude Code. The prose gate checks only `gh` issue and PR bodies in the other agents, and not questions or file edits.
 - Check that Codex and OpenCode run their hooks in a real session. So far they have run only with sample input.
 
 **Clean-up found along the way**

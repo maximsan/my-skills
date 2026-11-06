@@ -35,3 +35,67 @@ To update, run the same steps again.
 
 **Don't run `npm install -g gh`.** That npm package is a different tool. It installs its own `gh` command, which can
 hide the real GitHub CLI on your PATH.
+
+## One setup for every agent and machine
+
+The goal is one set of rules, skills and checks that Claude Code, Codex, OpenCode and Cursor all follow, on the Mac and on Windows.
+
+Decided:
+
+- This repo holds the shared setup. The Mac comes first, and Windows follows once the Mac works.
+- A small install script and a read-only check for anything out of sync do the work. Git gives history and undo. A failed install is fixed by hand.
+- Each agent gets the setup through its own supported mechanism, and a project's own rules can only tighten it.
+- `~/.agents/skills` stays the folder agents find skills in, linked to this repo.
+
+### Next steps, in order
+
+1. **Settle the shared rules.** Review the differences between the Mac's global rules, its Codex rules and `rules/common.md`. Load `rule-author` before writing them.
+   - Agents ask whenever a step could go more than one way, and never pick silently.
+   - The detailed writing rules stay in the shared rules, so every agent loads them.
+   - The rest is still open.
+2. **Split the rules.** `rules/common.md` keeps what both machines share. A workflow file for each machine takes the rest, including this file's Windows workflow rules, unchanged.
+3. **Bring in the Mac's skills and hooks.** They sit outside git today: `check-prose`, `disk-audit`, `pr-description`, `repo-checks`, `review-and-fix` and the hooks. Read each for private details first, because this repo is public. Personal settings files stay out.
+4. **Write the install script and the check.** Run the hook tests from `npm run check`.
+5. **Prove each agent loads the setup.** A fresh session in each agent must show the expected rules and skills. Back up the current files first.
+
+### Postponed
+
+Each item waits for the steps above, unless it says otherwise.
+
+**Windows**
+
+- Install the shared setup on Windows. The rules here must keep working on the Claude Code version named in `CONTRIBUTING.md`.
+
+**Other repos**
+
+- Merge `devkit` into this repo as a monorepo, keeping its history. Combine its `devclean` command with `disk-audit`, which overlap.
+- Merge `my-dotfiles` the same way. Decide first what stays private, and commit or drop the changes waiting in its `.zshrc` and `.gitconfig`. `~/.zshenv` isn't tracked anywhere yet.
+
+**Agent gaps**
+
+- OpenCode has no temp-clone warning and no temp-folder rule. It reads the global `CLAUDE.md` as a fallback for now.
+- Cursor's app was removed from the Mac, so its hooks are untested. When it's back, test them.
+- **Owner's note:** paste this into Cursor under Customize → Rules, because its global rules live in that settings screen:
+
+  > Keep agent work in a git worktree whose origin is the real GitHub repository, and push every commit worth keeping before you finish. Use `/private/tmp` only for logs and scratch files that can be lost, because macOS may clear it on restart.
+
+- The review, `git add` and zsh gates run only in Claude Code. The prose gate checks only `gh` issue and PR bodies in the other agents, and not questions or file edits.
+- Check that Codex and OpenCode run their hooks in a real session. So far they have run only with sample input.
+
+**Clean-up found along the way**
+
+- Move app-specific details out of the global Claude settings and into that app.
+- Fix the skills that point at a missing `~/.agents/references/definition-of-done.md`.
+- Compare which skills each agent can start on its own. Claude Code limits many of them to manual use, and Codex doesn't.
+- Pick one PR workflow from `pr` and `pr-description`.
+- Point `pr-description` and `review-and-fix` at the shared rules instead of the global `CLAUDE.md`.
+
+**Disk use**
+
+- Add a script that lists clean, merged worktrees for the owner to approve for removal.
+- Try `worktree.symlinkDirectories` so worktrees can share large folders such as `node_modules`.
+
+**Left out on purpose**
+
+- Copilot, until it's clear which Copilot product is in use.
+- A custom installer with previews, transactions and its own rollback command. Add one only if a failed install causes real damage.

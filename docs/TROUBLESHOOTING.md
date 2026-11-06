@@ -49,8 +49,8 @@ Set-Content "C:\Users\<you>\projects\CLAUDE.md" '@C:/Users/<you>/projects/rules-
 ```
 
 - **BANANA-7 appears** → pointers work, so the problem is in the rules themselves.
-- **Nothing** → pointers aren't supported. Paste the contents of `prompts\rules\common.md` into
-  `projects\CLAUDE.md` instead. Paste it again each time the original changes.
+- **Nothing** → pointers aren't supported. Paste the contents of `prompts\rules\common.md` and
+  `prompts\rules\workflows\task-flow.md` into `projects\CLAUDE.md` instead. Paste it again each time the original changes.
 
 Restore your file afterwards, and delete `rules-test.md`.
 
@@ -91,7 +91,7 @@ Get-ChildItem .claude\skills | Where-Object LinkType | ForEach-Object { cmd /c r
 
 Remove the projects link the same way: `cmd /c rmdir "C:\Users\<you>\projects\.claude\skills"`.
 
-In `projects\CLAUDE.md`, delete only the `@…/prompts/rules/common.md` line. Anything else in that file is yours.
+In `projects\CLAUDE.md`, delete only the `@…/prompts/rules/common.md` and `@…/prompts/rules/workflows/task-flow.md` lines. Anything else in that file is yours.
 If `setup` found the file already there, it kept your original as `CLAUDE.md.bak` next to it, and you can restore
 that instead.
 
@@ -113,11 +113,12 @@ Each app's `CLAUDE.local.md` and `docs\ai\`, and `projects\investigations\`, are
 
 If you can't install it, the same setup by hand. Replace `<you>` throughout.
 
-**1. The shared rules and skills.** Put this line at the top of `C:\Users\<you>\projects\CLAUDE.md`. Create the file
+**1. The shared rules and skills.** Put these lines at the top of `C:\Users\<you>\projects\CLAUDE.md`. Create the file
 if it doesn't exist:
 
 ```markdown
 @C:/Users/<you>/projects/prompts/rules/common.md
+@C:/Users/<you>/projects/prompts/rules/workflows/task-flow.md
 ```
 
 Then link the skills for Claude started in `projects\`, and make the folder for tickets:
@@ -138,7 +139,7 @@ Copy-Item "C:\Users\<you>\projects\prompts\templates\CLAUDE.local.md.template" "
 ```
 
 In `CLAUDE.local.md`, replace `<stack rules>` with a line for each stack the app uses, e.g.
-`@C:/Users/<you>/projects/prompts/rules/react.md`. The choices are every file in `rules/` except `common.md`.
+`@C:/Users/<you>/projects/prompts/rules/react.md`. The choices are every file directly in `rules/` except `common.md`.
 Link each skill into the app. Skip any skill the app already has a folder for: that one is the team's.
 
 ```powershell

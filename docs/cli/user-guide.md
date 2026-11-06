@@ -80,11 +80,12 @@ claude-rules setup
 ```
 
 **What it does:**
-1. Adds one line to `projects\CLAUDE.md`, creating the file if needed. The line makes Claude read the shared rules
+1. Adds two lines to `projects\CLAUDE.md`, creating the file if needed. The lines make Claude read the shared rules
    in every app below it:
 
    ```
    @C:/Users/me/projects/prompts/rules/common.md
+   @C:/Users/me/projects/prompts/rules/workflows/task-flow.md
    ```
 
 2. Creates the skills link, `projects\.claude\skills`. It's a shortcut to `projects\prompts\skills`, for Claude
@@ -109,7 +110,7 @@ claude-rules setup
   offers the next one.
 
 **What it's careful about:**
-- If `projects\CLAUDE.md` already has your own text, the line is added at the top and your text is kept. A copy of
+- If `projects\CLAUDE.md` already has your own text, the lines are added and your text is kept. A copy of
   the old file is saved first, as `projects\CLAUDE.md.bak`.
 - If `projects\.claude\skills` is a real folder with files in it, `setup` won't touch it, because it may hold your own
   skills. It tells you how to move them.
@@ -133,14 +134,14 @@ Looking around
 Your apps live in ~/projects? [Y/n]
 
 Plan
-  1  Shared rules line in projects/CLAUDE.md — create it, with the line
+  1  Shared rules lines in projects/CLAUDE.md — create it, with the lines
   2  Link projects/.claude/skills → projects/prompts/skills — create the link
   3  Bug-fix reminder in ~/.claude/settings.json — add the reminder, which runs on each message, in the projects
      folder and your apps
 
 Go ahead? [Y/n]
 
-  ✔ Shared rules line in projects/CLAUDE.md — created
+  ✔ Shared rules lines in projects/CLAUDE.md — created
   ✔ Link projects/.claude/skills → projects/prompts/skills — linked (12 skills)
   ✔ Bug-fix reminder in ~/.claude/settings.json — created
 
@@ -284,7 +285,7 @@ look right and still fail to run.
 Results
   ✔ Node 18 or newer — v20.11.0
   ✔ git — 2.44.0
-  ✔ Shared rules in projects/CLAUDE.md — the line is there, and every @ line points at a real file
+  ✔ Shared rules in projects/CLAUDE.md — the lines are there, and every @ line points at a real file
   ✔ Skills link projects/.claude/skills — 12 skills
   ✔ Bug-fix reminder in ~/.claude/settings.json — the reminder runs on each message, in the projects folder and your
     apps; a test message got the reminder
@@ -313,7 +314,7 @@ Every command goes through the same six stages, in the same order:
    that can't be done safely says `can't do`, with a `Fix:` line.
 5. **"Go ahead?"** Only now does anything change. Each step shows a progress line with a turning symbol and the
    time so far. When the step ends, that line is replaced by how it went, e.g.
-   `✔ Shared rules line in projects/CLAUDE.md — created`. A step that took a second or more also shows its time.
+   `✔ Shared rules lines in projects/CLAUDE.md — created`. A step that took a second or more also shows its time.
    Set `NO_COLOR=1` to turn the colours off.
 6. **The recap:** any step that still needs you, listed again with its `Fix:` line. Then a count like `All 2 done`
    or `1 done, 1 failed`, and one `Next:` line with the most useful next step.

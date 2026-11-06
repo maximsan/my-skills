@@ -45,7 +45,7 @@ starts each ticket, and `claude-rules doctor` checks everything at any time.
 | Folder | What's in it |
 |---|---|
 | `docs/` | Setup, the worked example, how it works, the glossary, planned work, and the setup tool's guides |
-| `rules/` | `common.md` for every task in every app, plus one file per kind of app: React, TypeScript, microfrontends |
+| `rules/` | `common.md` for every task in every app, `workflows/` for how each machine runs a task, plus one file per kind of app: React, TypeScript, microfrontends |
 | `skills/` | The skills, one folder each |
 | `templates/` | Templates copied into each app |
 | `cli/` | The `claude-rules` setup tool |

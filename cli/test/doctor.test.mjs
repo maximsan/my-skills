@@ -90,7 +90,7 @@ test("after setup and add-app, the app is kept out of git, and its unfilled note
 
   const { exitCode, output } = await runDoctor();
 
-  assert.match(output, /✔ Shared rules in .* — the line is there/);
+  assert.match(output, /✔ Shared rules in .* — the lines are there/);
   assert.match(output, /✔ App web-shop — kept out of git: CLAUDE\.local\.md, docs\/ai\/, the skill links/);
   assert.match(output, /Claude fills in the rest of CLAUDE\.local\.md on its first task here/);
   assert.doesNotMatch(output, /App web-shop — worth a look/, "unfilled notes aren't a warning");

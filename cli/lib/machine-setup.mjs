@@ -60,23 +60,58 @@ export const hasLine = (text, line, platform) =>
   Boolean(text?.split(LINE_BREAK).some((existing) => isSameLine(existing.trim(), line, platform)));
 
 /**
- * @typedef {{ kind: "source-missing" }
+ * @typedef {{ kind: "source-missing", file: string }
  *   | { kind: "missing" }
- *   | { kind: "without-line", text: string }
+ *   | { kind: "without-line", text: string, missingLines: string[] }
  *   | { kind: "present", text: string }} SharedRulesState
  */
 
 /**
- * Reads projects/CLAUDE.md: whether it exists, and whether it has the line that loads the shared rules.
- * @param {import("./layout.mjs").Layout} layout where the shared rules file and the common rules file are
+ * The rule files projects/CLAUDE.md loads on every task.
+ * @param {import("./layout.mjs").Layout} layout where the rule files are
+ * @returns {string[]} their paths, common rules first
+ */
+const importedRuleFiles = (layout) => [layout.commonRulesFile, layout.taskFlowRulesFile];
+
+/**
+ * The `@` lines projects/CLAUDE.md needs.
+ * @param {import("./layout.mjs").Layout} layout where the rule files are
+ * @returns {string[]} one line per rule file, common rules first
+ */
+export const importedRuleLines = (layout) => importedRuleFiles(layout).map(toImportLine);
+
+/**
+ * The file's text with its missing `@` lines added: below the common rules line when it has one, so the common rules
+ * always load first, or else at the top.
+ * @param {string} text the file's text
+ * @param {string[]} missingLines the lines to add
+ * @param {import("./layout.mjs").Layout} layout where the common rules file is
+ * @param {NodeJS.Platform} platform the operating system, which decides whether a path's case matters
+ * @returns {string} the new text
+ */
+export const withImportedRuleLines = (text, missingLines, layout, platform) => {
+  const lines = text.split("\n");
+  const commonLine = toImportLine(layout.commonRulesFile);
+  const insertAt = lines.findIndex((line) => hasLine(line, commonLine, platform)) + 1;
+
+  lines.splice(insertAt, 0, ...missingLines);
+
+  return lines.join("\n");
+};
+
+/**
+ * Reads projects/CLAUDE.md: whether it exists, and whether it has the lines that load the shared rules.
+ * @param {import("./layout.mjs").Layout} layout where the shared rules file and the rule files are
  * @param {import("./files.mjs").Files} files reads the disk
  * @param {NodeJS.Platform} platform the operating system, which decides whether a path's case matters
- * @returns {SharedRulesState} this repo's common rules file missing, or projects/CLAUDE.md missing, without the
- *   line, or with it; with the file's text when it exists
+ * @returns {SharedRulesState} one of this repo's rule files missing, or projects/CLAUDE.md missing, without some
+ *   of the lines, or with them all; with the file's text when it exists
  */
 export const readSharedRulesState = (layout, files, platform) => {
-  if (!files.exists(layout.commonRulesFile)) {
-    return { kind: "source-missing" };
+  const missingSource = importedRuleFiles(layout).find((file) => !files.exists(file));
+
+  if (missingSource) {
+    return { kind: "source-missing", file: missingSource };
   }
 
   const text = files.readText(layout.sharedRulesFile);
@@ -85,35 +120,34 @@ export const readSharedRulesState = (layout, files, platform) => {
     return { kind: "missing" };
   }
 
-  return hasLine(text, toImportLine(layout.commonRulesFile), platform)
-    ? { kind: "present", text }
-    : { kind: "without-line", text };
+  const missingLines = importedRuleLines(layout).filter((line) => !hasLine(text, line, platform));
+
+  return missingLines.length === 0 ? { kind: "present", text } : { kind: "without-line", text, missingLines };
 };
 
 /**
  * What the shared rules state means, as a check result. `todo` is what `setup` does.
  * @param {SharedRulesState} state what readSharedRulesState found
- * @param {import("./layout.mjs").Layout} layout where the common rules file is, for the message
  * @returns {import("./contract.mjs").CheckResult} done, todo or blocked, with the reason and any fix
  */
-export const describeSharedRules = (state, layout) => {
+export const describeSharedRules = (state) => {
   switch (state.kind) {
     case "source-missing":
       return {
         status: "blocked",
-        reason: `${displayPath(layout.commonRulesFile)} is missing from this repo`,
+        reason: `${displayPath(state.file)} is missing from this repo`,
         fix: "Run git pull in this repo, or clone it again.",
       };
     case "missing":
-      return { status: "todo", reason: "the file doesn't exist yet", action: "create it, with the line" };
+      return { status: "todo", reason: "the file doesn't exist yet", action: "create it, with the lines" };
     case "without-line":
       return {
         status: "todo",
-        reason: "the file doesn't have the line yet",
-        action: "add the line at the top, after a backup beside it",
+        reason: `the file doesn't have ${state.missingLines.join(" or ")} yet`,
+        action: "add what's missing, after a backup beside it",
       };
     case "present":
-      return { status: "done", reason: "the line is there" };
+      return { status: "done", reason: "the lines are there" };
   }
 };
 

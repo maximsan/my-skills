@@ -25,7 +25,7 @@ Afterwards the projects folder looks like this. Only your apps, and `docs/` if y
 
 ```
 projects/
-  CLAUDE.md          one line that loads the shared rules for every app below
+  CLAUDE.md          two lines that load the shared rules for every app below
   .claude/skills/    a link to prompts/skills, for Claude started here
   investigations/    one folder per ticket, under its app: investigations/web-shop/ORD-123/
   docs/              your book of knowledge shared across the apps, if you keep one

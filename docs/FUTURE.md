@@ -61,13 +61,12 @@ Each item waits for the steps above, unless it says otherwise.
 
 - Install the shared setup on Windows. The rules here must keep working on the Claude Code version named in `CONTRIBUTING.md`.
 - Run `claude-rules setup` on the Windows machine after pulling, so it loads `rules/workflows/task-flow.md`.
-- Move Windows to asking first, as on the Mac. Today it picks a default and marks it `⚠️ Assumed:`. The task skills sort open questions into blockers, assumptions and probes, and `task-plan`, `task-implement`, `rework` and `task-learn` write or read that marker, so they change with it.
 
 **Other repos**
 
 - Merge `devkit` into this repo as a monorepo, keeping its history. Combine its `devclean` command with `disk-audit`, which overlap.
-- Merge `my-dotfiles` the same way, once its pending PR is merged. Decide first what in its `.gitconfig` stays private.
-- After that PR merges, replace `~/.git-hooks`, `~/.git-template` and `~/.zshenv` with links into `~/.dotfiles`. Until then each is a copy, kept in step by hand.
+- Merge `my-dotfiles` the same way, after [its PR](https://github.com/maximsan/my-dotfiles/pull/1) that tracks the shell, git config and hook files. That repo is public, so decide what in its `.gitconfig` stays private before merging that PR.
+- After that PR merges, replace `~/.git-hooks`, `~/.git-template` and `~/.zshenv` with symlinks to their files in `~/.dotfiles`. Until then they are separate copies, and an edit to one is copied to the other by hand.
 
 **The Mac's global rules**
 

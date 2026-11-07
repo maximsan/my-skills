@@ -16,11 +16,9 @@ Jump to:
 
 ## Rules and skills
 
-**owner** — the person these rules serve: you, wherever this glossary says "you".
-_Avoid_: user.
+**owner** — the person these rules serve.
 
-**agent** — an AI coding tool meant to load these rules, such as Claude Code, Codex, OpenCode or Cursor.
-_Avoid_: Claude, when any agent is meant.
+**agent** — an AI coding tool that loads these rules, such as Claude Code, Codex, OpenCode or Cursor.
 
 **file path and line number** — e.g. `src/auth/useLogin.ts:34`. Points at one exact line in one exact file. Claude
 has to give one whenever it says something about your code, so you can click and check instead of taking its word.

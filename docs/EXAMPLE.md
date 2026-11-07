@@ -64,6 +64,7 @@ WalletPage already guards with `cards?.length`. ProfileCards does not — same b
 1. QUESTION — should a new account (null) and an emptied wallet ([]) look the same to the user?
    a) yes, both show the add-payment prompt  ← recommend
    b) no, new accounts get a different onboarding message
+   Answer: 1a (2026-08-10)
 ```
 
 **This is where it paid for itself.** My guess about the component was right, but the actual cause was two different
@@ -101,7 +102,6 @@ Next:      Step 2
 ### Step 2 — guard in PaymentSummary — done
 Files:     src/checkout/PaymentSummary.tsx
 Proof:     npm test PaymentSummary → 4 passed
-Answer:    same prompt for both empty states, from answer 1a
 ```
 
 The `Learned:` line matters. The plan said the error was `undefined`; the real one was `null`. Small, but a fix
@@ -153,8 +153,8 @@ The cards API returns [] for an emptied wallet and null for a new account. Guard
 src/payments/useSavedCards.ts → useSavedCards() · source: ORD-412 progress.md Step 1 · 2026-08-10
 ```
 
-That's the note I'd want in six months. One note from a whole ticket is normal. The `Answer:` line didn't
-become a note, because the answer held, and a decision that held is already visible in the code.
+That's the note I'd want in six months. One note from a whole ticket is normal. The answer to question 1
+didn't become a note, because it held, and a decision that held is already visible in the code.
 
 ---
 

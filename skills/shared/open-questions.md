@@ -32,5 +32,5 @@ Cost:   ~20 seconds, changes nothing
 ```
 
 Every question written down gives three things: the question, the proposed answer, and what would change in the
-plan if the answer were different. Every probe that ran gives what it actually showed. Every answer the user gave is
-recorded next to its question, with the date.
+plan if the answer were different. Every probe that ran gives what it actually showed. Record each answer from the user
+under its question: `Answer: 1a (2026-08-10)`.

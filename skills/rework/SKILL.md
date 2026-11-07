@@ -124,7 +124,7 @@ Follow [`shipped.md`](shipped.md).
 
 ## 8. Re-check the answers
 
-`findings.md` and the `Answer:` lines in `progress.md` hold the user's answers from before. Mark each: still holds,
+The `Answer:` lines in `findings.md` and `progress.md` hold the user's answers from before. Mark each: still holds,
 or now invalid. An answer given under the old requirement is a strong candidate for what breaks under the new one. An
 option picked last week may not be available now.
 

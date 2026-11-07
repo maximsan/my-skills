@@ -4,12 +4,13 @@ Old:
 - The Mac asked before any step that could go more than one way.
 - Windows took a safe default and marked it `⚠️ Assumed:`, so a wrong guess showed up only in the result.
 
-New: both ask first. The rule moved into `rules/common.md`.
+New: both ask first. The rule moved into `rules/common.md`. This reverses the 2026-11-06 entry's rejection of one
+asking rule.
 
 - The task skills sort open questions into three kinds: answered by the code or ticket, a question for the user, and a
   probe. A probe is a small check that answers a question by running something.
-- The user's answers go into `findings.md`, or into `progress.md` as `Answer:` lines. `rework` and `task-learn` read
-  those instead of the old marker.
+- Each answer is an `Answer:` line: under its question in `findings.md`, or in `progress.md` for a question asked
+  while building. `rework` and `task-learn` read those instead of the old marker.
 
 **Ruled with it:** Windows keeps working directly in each app's folder. A separate git worktree per change stays a
 rule for the Mac only.

@@ -21,7 +21,7 @@ Commit:  <short sha> (<branch>)
 
 The commit goes in the plan's header. That's how anyone can tell later whether the plan has gone out of date.
 
-Read the task file. If it's missing or unreadable, stop and ask. That alone is a blocker.
+Read the task file. If it's missing or unreadable, stop and ask.
 
 ## Step 2 — Get the facts
 
@@ -50,7 +50,7 @@ Work through [`../shared/open-questions.md`](../shared/open-questions.md), start
 - **QUESTION**: ask in chat, all of them at once. Write `plan.md` only once every one is answered.
 - **PROBE**: run the read-only ones now and fold in the results.
 
-Record each answer in `findings.md`, next to its question. `rework` re-checks them when a requirement changes.
+Record each answer in `findings.md`, under its question. `rework` re-checks them when a requirement changes.
 
 ## Step 4 — Check the draft
 
@@ -111,8 +111,8 @@ plan.
 # Plan: <ticket / short title>
 Commit: <sha> (<branch>) · Rules: <names> · Facts from: findings.md
 
-## Questions / Blockers
-Each with a proposed answer and what would change. `None` if there are none.
+## Questions
+Each with the user's answer from `findings.md`. `None` if there were none.
 
 ## What the code does
 | Function | Where | What it actually does |

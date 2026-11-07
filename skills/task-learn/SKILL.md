@@ -33,7 +33,7 @@ List every candidate, each with the line it came from. **These are the only sour
 | Source | What to look for |
 |---|---|
 | `progress.md` | `Learned:` lines |
-| `findings.md`, `progress.md` | Answers, and choices made without asking, that turned out wrong |
+| `findings.md`, `progress.md` | `Answer:` lines that turned out wrong |
 | `debug.md` | The confirmed cause, and anything ruled out that looked likely |
 | `review.md` | Findings marked **won't fix**, with their reason — a thing that looks wrong and isn't |
 | `plan.md` | Deviations — where the code turned out different from what the plan expected |

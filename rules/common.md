@@ -56,9 +56,8 @@ When a request is unclear, or a step could go more than one way, stop and ask be
 and report the choice afterwards. This holds mid-task as much as at the start.
 
 - First check what the code, the ticket and these rules already answer. Ask only about what is genuinely open.
-- Ask closed questions: give options, each explained, and your recommendation, so I can answer with `1b, 2a`. Use the
-  agent's interactive question tool where it has one.
-- Before you finish, re-read my request and name any choice you made without asking.
+- Ask closed questions: give options, each explained, and your recommendation. Use the agent's interactive question
+  tool where it has one. Elsewhere, number the options so I can answer with `1b, 2a`.
 
 ## One file per purpose
 

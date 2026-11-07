@@ -210,7 +210,7 @@ overlap. A note's heading says when you'd need it, so a single file is enough.
 
 Rules for keeping it useful:
 
-- **Every note names where it came from in the task.** A `Learned:` line, an assumption that proved wrong, a
+- **Every note names where it came from in the task.** A `Learned:` line, an answer that proved wrong, a
   correction you made, a review won't-fix, or a confirmed debug cause. No source, no note. Most tasks add nothing.
 - **Only write what's still true in three months.** Line numbers and pasted code go stale in days. How something
   behaves, and why it was built that way, doesn't.

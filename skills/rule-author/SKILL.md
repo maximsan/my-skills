@@ -63,8 +63,8 @@ trigger to `CLAUDE.md`, such as "**Load `debug`** after two failed fixes". The c
 ## 4. The body
 
 - **Give orders.** "Read the task file", not "you should read the task file" or "the agent should read it". The
-  user is "the user". Keep "you" only in text the agent writes for someone to read: a reply to the user, a marker
-  such as `Needs your input:`, or a note heading.
+  user is "the user". Keep "you" only in text the agent writes for someone to read: a reply to the user, a question
+  to the user, or a note heading.
 - **State the target behavior.** "Write one-line comments" works better than "don't write long comments". Naming a
   behavior makes it more likely, even inside a ban. Keep a ban only as a hard guardrail, and pair it with the target.
 - **End every step on something the agent can check:** a file written, a section filled, a line printed. "Every

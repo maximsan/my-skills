@@ -106,7 +106,7 @@ this section as the cheap early catch.
 
 **Stop and ask** — anything else: several answers are defensible, something is blocked, it conflicts with the
 codebase, or it can't be undone. Ask as a closed question with options and a recommendation. Record the answer in
-`progress.md` as `Answer:` with the question it settles.
+`progress.md` as an `Answer:` line, shown in Step 6.
 
 ## Step 6 — Keep notes along the way
 
@@ -120,7 +120,7 @@ Proof:     npm test src/auth → 12 passed
 Learned:   the 401 handler already retried once — the plan assumed it didn't
 Removed:   nothing
 Next:      Step 4, needs the API mock from step 3
-Open:      should the retry count be configurable?
+Answer:    should the retry count be configurable? → no, one retry (2026-08-10)
 ```
 
 Keep `plan.md` current too — tick steps as they land, write verification results in place, tick tests as they get

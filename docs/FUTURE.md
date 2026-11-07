@@ -61,13 +61,13 @@ Each item waits for the steps above, unless it says otherwise.
 
 - Install the shared setup on Windows. The rules here must keep working on the Claude Code version named in `CONTRIBUTING.md`.
 - Run `claude-rules setup` on the Windows machine after pulling, so it loads `rules/workflows/task-flow.md`.
-- Decide whether Windows also makes each repo change in its own git worktree. Its skills work directly in the app's folder today.
-- Decide whether Windows moves to asking first. Today it picks a default and marks it `⚠️ Assumed:`, and its `rework` and `task-learn` skills search for that marker.
+- Move Windows to asking first, as on the Mac. Today it picks a default and marks it `⚠️ Assumed:`. The task skills sort open questions into blockers, assumptions and probes, and `task-plan`, `task-implement`, `rework` and `task-learn` write or read that marker, so they change with it.
 
 **Other repos**
 
 - Merge `devkit` into this repo as a monorepo, keeping its history. Combine its `devclean` command with `disk-audit`, which overlap.
-- Merge `my-dotfiles` the same way. Decide first what stays private, and commit or drop the changes waiting in its `.zshrc` and `.gitconfig`. `~/.zshenv` isn't tracked anywhere yet.
+- Merge `my-dotfiles` the same way, once its pending PR is merged. Decide first what in its `.gitconfig` stays private.
+- After that PR merges, replace `~/.git-hooks`, `~/.git-template` and `~/.zshenv` with links into `~/.dotfiles`. Until then each is a copy, kept in step by hand.
 
 **The Mac's global rules**
 
@@ -84,7 +84,6 @@ Each item waits for the steps above, unless it says otherwise.
 
 - The review gate runs in Claude Code, Codex and OpenCode. Add it to Cursor once the app is back.
 - Rename or retire existing `codex/` branches. The branch-name rule only stops new ones.
-- Track `~/.git-hooks` in git, because the branch-name rule and attribution stripping live there, outside any repo.
 - Replace the old Codex command-line install. It can't read the current config, so `codex` fails in a terminal.
 - Test `review-and-fix` in Codex and OpenCode, because it depends on each agent's sub-agents.
 - The `git add` and zsh gates run only in Claude Code. The prose gate checks only `gh` issue and PR bodies in the other agents, and not questions or file edits.
@@ -97,6 +96,7 @@ Each item waits for the steps above, unless it says otherwise.
 - Compare which skills each agent can start on its own. Claude Code limits many of them to manual use, and Codex doesn't.
 - Pick one PR workflow from `pr` and `pr-description`.
 - Point `pr-description` and `review-and-fix` at the shared rules instead of the global `CLAUDE.md`.
+- Review the skills kept inside projects: `flutter-mobile-design` in `brewpath`, `react-component-architecture` in `cleanup-photos` and `typescript-diagnostics` in `maximsan`. Move the general parts here, and leave what is about one project in that project.
 
 **Disk use**
 

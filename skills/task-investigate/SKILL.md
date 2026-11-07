@@ -65,7 +65,7 @@ with line numbers"). Never give one a judgment call.
 ## Step 4 — Write down every question
 
 Work through [`../shared/open-questions.md`](../shared/open-questions.md): write down every question on its list,
-then sort each one as a BLOCKER, an ASSUMPTION or a PROBE. Run the read-only probes, and record what each one
+then sort each one as ANSWERED, a QUESTION or a PROBE. Run the read-only probes, and record what each one
 showed.
 
 ## Step 5 — Write findings.md
@@ -79,7 +79,7 @@ Save it next to the task file. **If it already exists, update it** — revise wh
 ## What the code does    function | where | what it actually does | quoted line
 ## What could break  everywhere it's called; which tests would fail
 ## How tests work    framework, how to run one test, where fixtures live — with real examples
-## Open questions    blockers, assumptions, probes and their results
+## Open questions    answered, questions for the user, probes and their results
 ## Files read        every file opened; files skipped, and why
 ```
 
@@ -88,7 +88,7 @@ Save it next to the task file. **If it already exists, update it** — revise wh
 In chat, give only:
 
 1. One paragraph on how it works today.
-2. The blockers, numbered, asked the way the common rules say to ask.
+2. The questions, numbered, asked the way the common rules say to ask.
 3. Any probe that needs approval first.
 
 Then stop and wait.

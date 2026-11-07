@@ -50,11 +50,15 @@ If running something answers a question faster than reading or asking, propose t
 would mean, and its cost. Run read-only checks yourself. Ask first for anything that writes, deploys, or costs money.
 If you need access I have and you don't, say exactly what you need and what you'd do with it. Don't guess instead.
 
-## Ask instead of assuming
+## Ask before choosing
 
-If two readings of my request lead to different work, ask. Ask closed questions: give me options and your
-recommendation, so I can answer with `1b, 2a`. Check what the code, the ticket and these rules already answer first,
-then ask about what is genuinely open.
+When a request is unclear, or a step could go more than one way, stop and ask before doing it. Never pick silently
+and report the choice afterwards. This holds mid-task as much as at the start.
+
+- First check what the code, the ticket and these rules already answer. Ask only about what is genuinely open.
+- Ask closed questions: give options, each explained, and your recommendation, so I can answer with `1b, 2a`. Use the
+  agent's interactive question tool where it has one.
+- Before you finish, re-read my request and name any choice you made without asking.
 
 ## One file per purpose
 

@@ -2,14 +2,6 @@
 
 The workflow for a machine that works through GitHub. It adds to the common rules, and wins where they differ.
 
-## Ask before guessing
-
-When something in a request is unclear, or a step could go more than one way, stop and ask before doing it. Never pick
-silently and report the choice afterwards. This holds mid-task as much as at the start. Use the interactive question
-tool where the agent has one, each option explained and one recommended.
-
-*Finish it here* lists what needs no asking.
-
 ## Act only on explicit instructions
 
 - A question gets an answer, not an edit. Reading, searching and read-only git are part of answering. Changing files,
@@ -22,7 +14,7 @@ tool where the agent has one, each option explained and one recommended.
 
 ## Finish it here
 
-Fix these first, then say so in the same reply:
+These need no asking. Fix them first, then say so in the same reply:
 
 - A small adjacent problem is fixed in the branch already open for the asked-for work, and named in its commit and
   ticket body. It is never filed as a new ticket. Raise it instead if it is large, needs a decision that isn't yours, or

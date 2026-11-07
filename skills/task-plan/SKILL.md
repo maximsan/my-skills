@@ -41,22 +41,16 @@ needs its file path and line number.
 A plan built on a guessed function signature wastes an entire implementation session. The plan carries a
 **What the code does** table proving nothing was guessed.
 
-## Step 3 — Questions and blockers
+## Step 3 — Questions
 
 Work through [`../shared/open-questions.md`](../shared/open-questions.md), starting from the questions already in
 `findings.md`. Then act on each kind:
 
-- **BLOCKER**: stop and ask in chat. Write `plan.md` only once it's answered.
-- **ASSUMPTION**: log it and keep going.
+- **ANSWERED**: use the answer, with its source.
+- **QUESTION**: ask in chat, all of them at once. Write `plan.md` only once every one is answered.
 - **PROBE**: run the read-only ones now and fold in the results.
 
-For anything that genuinely needs the user, use the same marker as everywhere else. `rework` finds every assumption
-in the task folder by grepping for it. It will never see a second spelling. Write it like this:
-
-```
-⚠️ Assumed: <what> because <why>
-   Needs your input: <the question this is standing in for>
-```
+Record each answer in `findings.md`, next to its question. `rework` re-checks them when a requirement changes.
 
 ## Step 4 — Check the draft
 
@@ -69,7 +63,7 @@ Check the draft against three things:
 
 1. Everything in Step 5, as a literal checklist.
 2. **Could someone who knows nothing about this conversation follow the plan without asking a single question?**
-   If not, something's missing or a question belongs in the blockers.
+   If not, something's missing or a question needs asking.
 3. Do all the code references still match the files at this commit?
 
 ## Step 5 — What the plan must contain
@@ -143,7 +137,7 @@ Each with a proposed answer and what would change. `None` if there are none.
 ## Summary
 - What changes:
 - What gets tested:
-- Risks and assumptions:
+- Risks:
 ```
 
 ## Step 7 — Match the size of the task

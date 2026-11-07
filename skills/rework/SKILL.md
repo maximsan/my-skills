@@ -122,12 +122,11 @@ watch it fail against the current code, then fix the code. `failing-test-first` 
 
 Follow [`shipped.md`](shipped.md).
 
-## 8. Re-check the assumptions
+## 8. Re-check the answers
 
-`progress.md` has `⚠️ Assumed:` lines from before. Mark each: still holds, now decided, or now invalid. An assumption
-that was safe under the old requirement is a strong candidate for what breaks under the new one.
-
-Do the same for the blocker answers in `findings.md`. An option picked last week may not be available now.
+`findings.md` and the `Answer:` lines in `progress.md` hold the user's answers from before. Mark each: still holds,
+or now invalid. An answer given under the old requirement is a strong candidate for what breaks under the new one. An
+option picked last week may not be available now.
 
 ## 9. Amend the plan; don't start a new one
 
@@ -169,7 +168,7 @@ with new names. If the shape isn't changing, it's a patch: plan it as one, as st
 ## If it shipped
 <call sites, live data, in-flight work and rollback, from `shipped.md`. `Not shipped` if it didn't.>
 
-## Assumptions no longer valid
+## Answers no longer valid
 
 ## Plan changes made
 <steps struck, steps added — all waiting for approval>

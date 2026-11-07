@@ -86,17 +86,6 @@ attempt are the most common way this work goes wrong. Then resume from `Start fr
   attempts.
 - **When no existing file fits, load `create`.**
 
-## Defaults and assumptions
-
-If a safe default exists, take it and mark it:
-
-```
-⚠️ Assumed: <what> because <why>
-```
-
-Assumptions are fine. Silent assumptions are the problem. Before you finish, re-read my request and list anything
-you assumed without saying so.
-
 ## Out-of-scope things you notice
 
 Out-of-scope things you notice go in a `Backlog` list, not fixed and not dropped.

@@ -102,13 +102,11 @@ this section as the cheap early catch.
 
 ## Step 5 — When unsure, pick the right response
 
-**Just do it and note it** — the plan is clear, or there's one obvious right answer given the codebase.
+**Just do it and note it** — the plan is clear, or the code, the ticket or the rules give one right answer.
 
-**Do it, but flag it** — several answers are defensible and being wrong is cheap to fix. Pick one and write
-`⚠️ Assumed: <what> because <why>` in `progress.md`.
-
-**Stop and ask** — something is genuinely blocked, conflicts with the codebase, can't be undone, or a wrong choice
-would waste real work. Ask as a closed question with options and a recommendation.
+**Stop and ask** — anything else: several answers are defensible, something is blocked, it conflicts with the
+codebase, or it can't be undone. Ask as a closed question with options and a recommendation. Record the answer in
+`progress.md` as `Answer:` with the question it settles.
 
 ## Step 6 — Keep notes along the way
 

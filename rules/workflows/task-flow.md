@@ -4,7 +4,7 @@ The workflow for a machine that works from task folders. It adds to the common r
 
 ## Start of every task
 
-Print at least these three lines first, before any work. A skill may ask for more lines — never fewer:
+Before any work, print these three lines. A skill may add more.
 
 ```
 Skills:  <picked, and why> | <rejected, and why>
@@ -12,55 +12,47 @@ Rules:   <which ones apply here, and what they change>
 Context: <files you read>
 ```
 
-Scan the skill list yourself. Don't wait to be told which one to use. Naming the ones you rejected proves you
-actually looked.
+Pick skills from the list yourself. Name the ones you rejected, to show you looked.
 
-**The projects folder** holds `prompts` and the apps. Claude starts either there or inside one app, where the
-projects folder is `../`. It holds two shared folders:
+**The projects folder** holds `prompts` and the apps. The agent starts there or inside one app. It has two shared
+folders:
 
-- `investigations/<app>/<TICKET>/`: **the task folder**, one per ticket, under the app the ticket is about. Every
-  task file goes there, never inside the app.
-- `docs/`: the book of knowledge shared across the apps.
+- `investigations/<app>/<TICKET>/`, **the task folder**: every task file goes here, never inside the app.
+- `docs/`: notes shared across the apps.
 
-Read these before acting. Paths without a folder are relative to the app you're working in:
+Before acting, read in the app you work in:
 
-- this app's `CLAUDE.md` and `CLAUDE.local.md`, whichever exist
-- `docs/ai/NOTES.md`: the Exemplars table, and the notes whose heading matches what you're about to do
-- `docs/ai/CONTEXT.md` and `docs/ai/GLOSSARY.md`, if they exist
-- the projects folder's `docs/`, when the task spans more than one app
-- the task folder, if one exists
+- `CLAUDE.md` and `CLAUDE.local.md`
+- `docs/ai/NOTES.md`
+- `docs/ai/CONTEXT.md` and `docs/ai/GLOSSARY.md`
+- the task folder
+- the projects folder's `docs/`, if the task spans several apps
 
-**Started in the projects folder, name the app before reading:** the task folder's `<app>`, or ask me. Then read
-that app's `CLAUDE.local.md` yourself. Claude Code loads it only once a file in the app is opened. Without the app,
-`docs/ai/` ends up outside every app.
+**Started in the projects folder,** name the app first: from the task folder, or ask me. Then read its
+`CLAUDE.local.md` yourself: Claude Code loads it only after a file in the app is opened.
 
-**Before your first edit in an app, fill in any `<placeholder>` left in its `CLAUDE.local.md`.** Work each one out
-from the repo:
+**A new app: if its `CLAUDE.local.md` still has `<placeholder>` gaps, fill them from the repo before your first
+edit:**
 
-- Commands: from `package.json` and the test setup. Run each once to check it works. Write "none" where there's none.
+- Commands: from `package.json` and the test setup. Run each once. Write "none" if there's none.
 - Where things are: from the folder layout.
-- Things people get wrong here: "none yet", unless you found one, such as a test marked as skipped.
+- Things people get wrong here: "none yet", unless you found one.
 
-If `docs/ai/NOTES.md` has no Exemplars table, propose one too: for each kind of file the app has, such as a
-component, a hook, a store, a test and a story, the one file you'd copy, picked the way `create` picks.
+If `docs/ai/NOTES.md` has no Exemplars table, propose one: for each kind of file, the one file you'd copy. Show me
+the result and wait for my approval before that first edit.
 
-Show me what you wrote, and wait for my approval before that first edit. Reading and investigating go on meanwhile.
-Skip this in `prompts`, the repo these rules live in: it isn't an app.
-
-Normal order for coding work: `task-investigate → task-plan → [I approve] → task-implement → task-review`, then I
-triage each finding (fix now → back to `task-implement` / backlog / won't fix), then `task-learn`.
-Skip `task-investigate` for small changes. Skip `task-review` for trivial diffs. Never skip `task-learn`, but
-"nothing to save" is a valid result from it.
+Coding work runs `task-investigate → task-plan → [I approve] → task-implement → task-review → [I sort the findings] →
+task-learn`. Skip `task-investigate` for small changes and `task-review` for trivial diffs. Always run `task-learn`:
+"nothing to save" is a fine result.
 
 ## Keep state in files, not in the chat
 
-Anything worth knowing after this chat goes in a file: `progress.md` while working, `debug.md` while debugging,
-`docs/ai/` for lasting facts. **Before answering a follow-up, re-read that file. Write what you just found into it
-before you reply.**
+- Write what's worth keeping into a file: `progress.md` while working, `debug.md` while debugging, `docs/ai/` for
+  lasting facts.
+- Before answering a follow-up, re-read that file. Add what you just found before you reply.
 
-**When you change direction, write a checkpoint before the first action in the new direction.** Changing direction
-means a hypothesis ruled out, an approach dropped, or a follow-up of mine sending you elsewhere. Fill every line.
-`none` is a valid answer.
+**When you change direction, write this checkpoint first:** after a hypothesis is ruled out, an approach dropped, or I
+send you elsewhere. Fill every line; `none` is fine.
 
 ```
 ↪ Pivot: <from> → <to>, because <evidence: file:line or output>
@@ -68,30 +60,23 @@ means a hypothesis ruled out, an approach dropped, or a follow-up of mine sendin
   Start from: <the first step in the new direction>
 ```
 
-**If what's now wrong is work already built, load `rework`** before touching anything. That covers a moved
-requirement, and an approach that failed after steps were ticked.
-
-Otherwise, delete what `Now wrong:` lists straight away, while you still remember it. Leftovers from a failed first
-attempt are the most common way this work goes wrong. Then resume from `Start from:`, not from memory.
+- If what's now wrong is work already built, load `rework` before touching anything.
+- Otherwise, delete what `Now wrong:` lists right away, then continue from `Start from:`.
 
 ## Skills to load
 
-- For code that was in the repo before this task, or a comment, **load `why-this-exists`** before deleting or rewriting
-  it.
-- Never fix a bug before a test reproduces it and fails. **Load `failing-test-first`.** Show me the failing output,
-  then the passing output, for every bug fix.
-- After two failed fix attempts, or when I ask you to debug, stop patching and **load `debug`**. Fix the cause, not
-  the symptom.
-- A case you can't source means you don't know what's wrong yet. **Load `debug`** now. Don't wait for two failed
-  attempts.
-- **When no existing file fits, load `create`.**
+- Before deleting or rewriting code or a comment that predates the task, load `why-this-exists`.
+- Fix a bug only after a failing test reproduces it: load `failing-test-first`. Show me the failing, then passing,
+  output.
+- After two failed fixes, when I ask you to debug, or when you can't explain a case, load `debug` and fix the cause.
+- When no existing file fits, load `create`.
 
 ## Out-of-scope things you notice
 
-Out-of-scope things you notice go in a `Backlog` list, not fixed and not dropped.
+Put them in a `Backlog` list.
 
 ## Suggest new rules and skills
 
-When I correct the same kind of thing twice, you look up the same fact twice, or a task resembles an earlier one,
-write a suggestion under `## Proposed rules` in `docs/ai/FEEDBACK.md`, with the evidence. One occurrence is noise. Suggest, don't create.
-**Before writing any rule or skill, load `rule-author`.** If an existing one covers it, extend that one instead.
+When I correct the same thing twice, you look up the same fact twice, or a task repeats an earlier one, add a
+suggestion with the evidence under `## Proposed rules` in `docs/ai/FEEDBACK.md`. Don't create it yourself. Before
+writing any rule or skill, load `rule-author`.

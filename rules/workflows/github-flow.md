@@ -2,82 +2,53 @@
 
 The workflow for a machine that works through GitHub. It adds to the common rules, and wins where they differ.
 
-## Act only on explicit instructions
+## Act only when told
 
-- A question gets an answer, not an edit. Reading, searching and read-only git are part of answering. Changing files,
-  regenerating artifacts or running a long suite to prove the answer are not. Say what is unverified, or offer to run it.
-- Change no code without an explicit instruction.
-- Creating a branch, committing, pushing it and opening its PR need no asking.
-- Never merge and never reset anything: both are the owner's.
-- A force-push or other destructive action on the default branch needs the owner's yes first.
-- To match what we agreed, rewrite a PR description, issue description or existing comment in place, without asking.
+- A question gets an answer, not an edit. Read, search and run read-only git to answer it.
+- Change files only when I ask for a change.
+- No asking needed: create a branch, commit, push it, open its PR, and rewrite a PR or issue description to match
+  what we agreed.
+- Never merge and never reset: both are mine.
+- Ask before a force-push or any destructive action on the default branch.
 
-## Finish it here
+## Fix without asking
 
-These need no asking. Fix them first, then say so in the same reply:
+Fix these, then tell me in the same reply:
 
-- A small adjacent problem is fixed in the branch already open for the asked-for work, and named in its commit and
-  ticket body. It is never filed as a new ticket. Raise it instead if it is large, needs a decision that isn't yours, or
-  belongs to another area.
-- Failing checks or a broken build on the default branch are fixed on sight.
-- A small docs-only change needs no ticket, branch or PR. Write it into the working files and show it to the
-  owner. Before the owner confirms it, it stays uncommitted. Once confirmed, commit it into the branch already open for related work, or
-  to the default branch, and push it there without asking again. Code never goes to the default branch unasked. If a doc
-  fix's branch has already landed, write the fix into the body of the ticket that owns it.
+- A small problem next to your task: fix it in the same branch, and mention it in the commit and the ticket. If it's
+  large, needs my decision or belongs to another area, ask.
+- Failing checks or a broken build on the default branch.
+- A small docs-only fix: write it and show it to me, uncommitted. Once I confirm, commit it to the related open branch
+  or the default branch, and push.
 
-## Stop on a contradiction or blocker
+Code goes to the default branch only when I ask.
 
-A ticket that contradicts a ruling, an open PR on the same files, or an unclear base branch is the owner's call. Raise
-it as a question before implementing, not first in the summary afterwards. When a rule demands an explicit
-authorization, ask for it, and never invent the ruling. Writing up a ruling the owner already made is not inventing one.
+## Stop when something conflicts
 
-## Keep decisions in the body
+Ask me before you start when:
 
-The owner doesn't read tracker comments. A resolution, correction or ruling goes into the issue or PR body, rewritten
-as a whole, never appended. Post a new comment only when it is really needed. A force-push needs no comment, because
-GitHub records it in the PR's timeline.
+- the ticket contradicts an earlier decision
+- another open PR changes the same files
+- the base branch is unclear
 
-A skill's internal names for its stages never reach the owner or a ticket: say the plain thing. Describe a ticket in
-words, and use its number only as a link. Short means fewer topics, never compressed sentences. A ticket a person
-cannot read is rewritten, title and body, before work on it starts.
+When a rule needs my explicit permission, ask for it. Never make up my decision.
 
-## Give each document one home
+## Put decisions in the issue or PR body
 
-- A decision is written down once, in whatever the project uses for decisions, as the ruling and its cost. The
-  reasoning stays in the ticket.
-- Project instruction files do not repeat each other or restate config.
-- Write no counts in prose, and no version numbers except one fixed on purpose, quoted beside its reason.
-- A README is the owner's cheat sheet: its commands and examples stay. Only stale facts and duplicates of a linked doc go.
+Put each decision or correction into the body of the issue or PR it concerns. Rewrite the body as a whole rather than
+adding to the end. Comment only when it's really needed.
+
+Refer to a ticket by what it's about, with its number as a link: "the login retry bug (#123)", not "#123".
 
 ## Work in a worktree
 
-- Any work that changes a repo gets its own worktree. Reading and answering need none.
-- Switch branches, check out or pull only in a worktree this session created, because another session may be working in
-  any other folder. Update local `main` from anywhere with `git fetch origin main:main`. Git refuses while any worktree
-  has `main` checked out.
-- Before you finish, push every commit worth keeping to GitHub. Treat `/private/tmp` as disposable.
+- Make every change to a repo in a worktree this session created.
+- Switch branches, check out or pull only there: another session may be using any other folder.
+- Update local `main` with `git fetch origin main:main`. It fails while any worktree has `main` checked out.
+- Before you finish, push every commit worth keeping.
 
 ## Use git this way
 
-- Stage by explicit path after `git status --short`, confirming each path is yours this turn. Leave other changes
-  unstaged and say so. Never `git add -A`.
-- Name each branch `<type>/<kebab-slug>`, where the type is `feat`, `fix`, `chore`, `docs`, `refactor`, `test`,
-  `prototype` or `research`.
-- A PR body follows the `pr-description` skill, once that skill is in this repo. It lives on the Mac for now.
-
-## Write code a reader understands on the first read
-
-- If a workaround needs a paragraph of comment to justify it, fix the code. The exception is a real external bug: one
-  line and a link.
-- Match complexity to the real problem. Add a layer only when you can say in one sentence what problem it solves
-  today. Cut no corners either: no hardcoding, no copy-paste, no quick hacks.
-- Comment only the non-obvious: a trap, the reason a value is what it is, a third-party integration. Use the
-  project's comment style, or else the language's own doc-comment form.
-- Pick the name last, once the code exists, for what it carries to the caller: what it returns (`blockReason()`), what
-  it does (`recordReview()`) or what it answers (`opensPullRequest()`).
-- Use one word per idea in a file. Never "refuse" in one place and "block" in another for the same act.
-- Reach data by name, not by position: `match.groups.folder`, not `match[1]`.
-
-## Run at most three subagents at once
-
-More share one usage limit and stop together.
+- Stage only your own files, by name, and mention any others you left. Never `git add -A`.
+- Name branches `<type>/<name-with-dashes>`, such as `fix/login-retry`.
+- Write PR bodies with the `pr-description` skill.

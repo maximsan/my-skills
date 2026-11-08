@@ -8,7 +8,7 @@ The workflow for a machine that works through GitHub. It adds to the common rule
 - Change files only when I ask for a change.
 - No asking needed: create a branch, commit, push it, open its PR, and rewrite a PR or issue description to match
   what we agreed.
-- Never merge and never reset: both are mine.
+- Never merge and never run `git reset`: both are mine.
 - Ask before a force-push or any destructive action on the default branch.
 
 ## Fix without asking

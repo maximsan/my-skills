@@ -79,7 +79,7 @@ Each item waits for the steps above, unless it says otherwise.
 - Cursor's app was removed from the Mac, so its hooks are untested. When it's back, test them.
 - **Owner's note:** paste this into Cursor under Customize → Rules, because its global rules live in that settings screen:
 
-  > Before you finish, push every commit worth keeping to GitHub. Treat `/private/tmp` as disposable.
+  > Before you finish, push every commit worth keeping.
 
 - The review gate runs in Claude Code, Codex and OpenCode. Add it to Cursor once the app is back.
 - Rename or retire existing `codex/` branches. The branch-name rule only stops new ones.

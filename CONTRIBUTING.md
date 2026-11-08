@@ -71,7 +71,7 @@ gets skimmed. Code written inline that should have been a named value is mostly 
 inline literals, `sonarjs/cognitive-complexity` and `complexity` for expressions doing too much at once, `max-depth`
 and `max-nested-callbacks` for nesting, and `max-len` to force long chains apart. What survives all of those —
 whether a particular expression has a concept behind it worth naming — is the only part that needs a written rule,
-and it's in `rules/common.md` under "Do what I asked, and only that".
+and it's in `rules/common.md` under "Write code a reader understands on the first read".
 
 Then three rules:
 

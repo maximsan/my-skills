@@ -14,8 +14,8 @@ Context: <files you read>
 
 Pick skills from the list yourself. Name the ones you rejected, to show you looked.
 
-**The projects folder** holds `prompts` and the apps. The agent starts there or inside one app. It has two shared
-folders:
+**The projects folder** holds `prompts` and the apps. The agent starts there or inside one app. The projects
+folder has two shared folders:
 
 - `investigations/<app>/<TICKET>/`, **the task folder**: every task file goes here, never inside the app.
 - `docs/`: notes shared across the apps.
@@ -38,8 +38,9 @@ edit:**
 - Where things are: from the folder layout.
 - Things people get wrong here: "none yet", unless you found one.
 
-If `docs/ai/NOTES.md` has no Exemplars table, propose one: for each kind of file, the one file you'd copy. Show me
-the result and wait for my approval before that first edit.
+If `docs/ai/NOTES.md` has no Exemplars table, propose one: for each kind of file, the one file you'd copy.
+
+Show me what you filled in and proposed, and wait for my approval before that first edit.
 
 Coding work runs `task-investigate → task-plan → [I approve] → task-implement → task-review → [I sort the findings] →
 task-learn`. Skip `task-investigate` for small changes and `task-review` for trivial diffs. Always run `task-learn`:

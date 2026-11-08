@@ -5,7 +5,7 @@ diff, and say for each item whether it was found.
 
 - Functions added that nothing calls. Unused imports. Dependencies nothing needs.
 - Commented-out code, new `TODO`s, debug prints, temporary logging, test scaffolding.
-- A branch, validation or try/catch for a case nothing can produce (see *Handling a case you haven't seen* in the
+- A branch, validation or try/catch for a case nothing can produce (see *Do what I asked, and only that* in the
   common rules). It means the cause wasn't found.
 - Config keys or feature flags from an approach that got dropped. Cross-check `progress.md` for abandoned
   attempts: anything from them still in the diff is dead code.

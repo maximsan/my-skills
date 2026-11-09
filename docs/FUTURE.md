@@ -7,35 +7,6 @@ What's planned but not built yet, and what it will need. Remove an entry once it
 Skills that create and edit GitHub issues from a task folder. They'll run the GitHub CLI, `gh`, so every computer that
 uses them needs it installed and signed in.
 
-### Installing `gh` without admin rights
-
-For a Windows computer where you can't run installers, such as a managed Windows environment. In Git Bash:
-
-```bash
-# 1. Find the latest version, e.g. 2.103.3
-VERSION=$(curl -sI https://github.com/cli/cli/releases/latest | grep -i '^location:' | sed 's#.*/tag/v##' | tr -d '\r')
-
-# 2. Download the portable zip, and extract it. The zip holds bin/gh.exe
-curl -L -o ~/gh.zip "https://github.com/cli/cli/releases/download/v${VERSION}/gh_${VERSION}_windows_amd64.zip"
-mkdir -p ~/gh-cli && unzip -o ~/gh.zip -d ~/gh-cli
-
-# 3. Put it on your PATH, now and in every new terminal
-export PATH="$HOME/gh-cli/bin:$PATH"
-echo 'export PATH="$HOME/gh-cli/bin:$PATH"' >> ~/.bashrc
-
-# 4. Check it, then sign in
-gh --version
-gh auth login
-```
-
-If `unzip` isn't found, extract with the `tar` that comes with Windows: `/c/Windows/System32/tar.exe -xf ~/gh.zip -C
-~/gh-cli`.
-
-To update, run the same steps again.
-
-**Don't run `npm install -g gh`.** That npm package is a different tool. It installs its own `gh` command, which can
-hide the real GitHub CLI on your PATH.
-
 ## One setup for every agent and machine
 
 The goal is one set of rules, skills and checks that Claude Code, Codex, OpenCode and Cursor all follow, on the owner's personal Macs.
@@ -51,8 +22,8 @@ Decided:
 ### Next steps, in order
 
 1. **Bring in the Mac's skills and hooks.** They sit outside git today: `check-prose`, `disk-audit`, `pr-description`, `repo-checks`, `review-and-fix` and the hooks. Read each for private details first, because this repo is public. Personal settings files stay out.
-2. **Write the install script and the check.** The script stops with a clear message without Git 2.54 or later and
-  `node`, because the global git hooks in `my-dotfiles` need both. Run the hook tests from `npm run check`.
+2. **Write the install script and the check.** The script stops with a clear message if Git is older than 2.54 or
+  `node` is missing. The global git hooks in `my-dotfiles` need both. Run the hook tests from `npm run check`.
 3. **Prove each agent loads the setup.** A fresh session in each agent must show the expected rules and skills. Back up the current files first.
 
 ### Postponed
@@ -61,11 +32,12 @@ Each item waits for the steps above, unless it says otherwise.
 
 **Parts built for the work machine**
 
-- The `claude-rules` setup tool, `rules/workflows/task-flow.md` and the task skills were built for the work Windows
-  machine. Decide which of them this Mac uses.
-- Turn the stack rules, `rules/typescript.md`, `rules/react.md` and `rules/microfrontend.md`, into skills that load for
-  that kind of work, next to the existing `using-zod` skill. Merge the general parts of `typescript-diagnostics`, from the `maximsan`
-  project, into the TypeScript skill. Review their wording line by line at the same time.
+- The `claude-rules` setup tool, `rules/workflows/task-flow.md` and the task skills were built for the work laptop.
+  Decide which of them the personal Macs use.
+- Turn the rules for TypeScript, React and microfrontends into skills, so each loads only for that kind of work. They
+  are `rules/typescript.md`, `rules/react.md` and `rules/microfrontend.md`. Put them next to the `using-zod` skill.
+  Merge the general parts of `typescript-diagnostics`, from the `maximsan` project, into the TypeScript skill. Review
+  the new skills' wording line by line.
 
 **Other repos**
 

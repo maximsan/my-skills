@@ -38,11 +38,12 @@ hide the real GitHub CLI on your PATH.
 
 ## One setup for every agent and machine
 
-The goal is one set of rules, skills and checks that Claude Code, Codex, OpenCode and Cursor all follow, on the Mac and on Windows.
+The goal is one set of rules, skills and checks that Claude Code, Codex, OpenCode and Cursor all follow, on the owner's personal Macs.
 
 Decided:
 
-- This repo holds the shared setup. The Mac comes first, and Windows follows once the Mac works.
+- This repo holds the shared setup for the owner's personal Macs. The work laptop keeps its own fork of this repo, so
+  no Windows setup is planned here.
 - A small install script and a read-only check for anything out of sync do the work. Git gives history and undo. A failed install is fixed by hand.
 - Each agent gets the setup through its own supported mechanism, and a project's own rules can only tighten it.
 - `~/.agents/skills` stays the folder agents find skills in, linked to this repo.
@@ -50,23 +51,26 @@ Decided:
 ### Next steps, in order
 
 1. **Bring in the Mac's skills and hooks.** They sit outside git today: `check-prose`, `disk-audit`, `pr-description`, `repo-checks`, `review-and-fix` and the hooks. Read each for private details first, because this repo is public. Personal settings files stay out.
-2. **Write the install script and the check.** Run the hook tests from `npm run check`.
+2. **Write the install script and the check.** The script stops with a clear message without Git 2.54 or later and
+  `node`, because the global git hooks in `my-dotfiles` need both. Run the hook tests from `npm run check`.
 3. **Prove each agent loads the setup.** A fresh session in each agent must show the expected rules and skills. Back up the current files first.
 
 ### Postponed
 
 Each item waits for the steps above, unless it says otherwise.
 
-**Windows**
+**Parts built for the work machine**
 
-- Install the shared setup on Windows. The rules here must keep working on the Claude Code version named in `CONTRIBUTING.md`.
-- Run `claude-rules setup` on the Windows machine after pulling, so it loads `rules/workflows/task-flow.md`.
+- The `claude-rules` setup tool, `rules/workflows/task-flow.md` and the task skills were built for the work Windows
+  machine. Decide which of them this Mac uses.
+- Turn the stack rules, `rules/typescript.md`, `rules/react.md` and `rules/microfrontend.md`, into skills that load for
+  that kind of work, next to the existing `using-zod` skill. Review their wording line by line at the same time.
 
 **Other repos**
 
 - Merge `devkit` into this repo as a monorepo, keeping its history. Combine its `devclean` command with `disk-audit`, which overlap.
 - Merge `my-dotfiles` the same way, after [its PR](https://github.com/maximsan/my-dotfiles/pull/1) that tracks the shell, git config and hook files. That repo is public, so decide what in its `.gitconfig` stays private before merging that PR.
-- After that PR merges, replace `~/.git-hooks`, `~/.git-template` and `~/.zshenv` with symlinks to their files in `~/.dotfiles`. Until then they are separate copies, and an edit to one is copied to the other by hand.
+- After that PR merges, follow its "After merging" steps. They link `~/.git-hooks` and `~/.zshenv` to `~/.dotfiles`.
 
 **The Mac's global rules**
 

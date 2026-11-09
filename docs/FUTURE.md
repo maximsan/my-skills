@@ -100,7 +100,7 @@ Each item waits for the steps above, unless it says otherwise.
 - Compare which skills each agent can start on its own. Claude Code limits many of them to manual use, and Codex doesn't.
 - Pick one PR workflow from `pr` and `pr-description`.
 - Point `pr-description` and `review-and-fix` at the shared rules instead of the global `CLAUDE.md`.
-- Review the skills kept inside projects: `flutter-mobile-design` in `brewpath`, and `react-component-architecture` in `cleanup-photos`. Move the general parts here, and leave what is about one project in that project.
+- Review the skills kept inside projects: `flutter-mobile-design` in `brewpath` and `react-component-architecture` in `cleanup-photos`. Move the general parts here, and leave what is about one project in that project.
 
 **Disk use**
 

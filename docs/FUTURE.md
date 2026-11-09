@@ -64,7 +64,8 @@ Each item waits for the steps above, unless it says otherwise.
 - The `claude-rules` setup tool, `rules/workflows/task-flow.md` and the task skills were built for the work Windows
   machine. Decide which of them this Mac uses.
 - Turn the stack rules, `rules/typescript.md`, `rules/react.md` and `rules/microfrontend.md`, into skills that load for
-  that kind of work, next to the existing `using-zod` skill. Review their wording line by line at the same time.
+  that kind of work, next to the existing `using-zod` skill. Merge the general parts of `typescript-diagnostics`, from the `maximsan`
+  project, into the TypeScript skill. Review their wording line by line at the same time.
 
 **Other repos**
 
@@ -99,7 +100,7 @@ Each item waits for the steps above, unless it says otherwise.
 - Compare which skills each agent can start on its own. Claude Code limits many of them to manual use, and Codex doesn't.
 - Pick one PR workflow from `pr` and `pr-description`.
 - Point `pr-description` and `review-and-fix` at the shared rules instead of the global `CLAUDE.md`.
-- Review the skills kept inside projects: `flutter-mobile-design` in `brewpath`, `react-component-architecture` in `cleanup-photos` and `typescript-diagnostics` in `maximsan`. Move the general parts here, and leave what is about one project in that project.
+- Review the skills kept inside projects: `flutter-mobile-design` in `brewpath`, and `react-component-architecture` in `cleanup-photos`. Move the general parts here, and leave what is about one project in that project.
 
 **Disk use**
 

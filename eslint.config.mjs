@@ -32,6 +32,15 @@ const NO_INLINE_VALUES = [
   },
 ];
 
+// Data is reached by name, not by position: `const [, scriptPath] = process.argv` or `match.groups.folder`, never
+// `process.argv[1]` or `match[1]`. A reader then knows what the value is without counting slots.
+const NO_POSITIONAL_READS = [
+  {
+    selector: String.raw`MemberExpression[computed=true][property.type='Literal'][property.raw=/^\d+$/]`,
+    message: "Reach this by name: destructure it into a named value, or use a named regex group.",
+  },
+];
+
 // Only the entry points talk to the process: run.mjs for the tool, each script Claude Code runs as a hook, and each
 // script a skill runs. The rest takes the operating system and the home folder from the context.
 const PROCESS_MESSAGE = "Take this from the command's context; only the entry points read it from the process.";
@@ -90,7 +99,7 @@ export default [
 
       "id-length": ["error", { min: MIN_NAME_LENGTH, properties: "never", exceptions: SHORT_WORDS }],
       "id-denylist": ["error", ...UNCLEAR_NAMES],
-      "no-restricted-syntax": ["error", ...NO_INLINE_VALUES, ...NO_PROCESS_READS],
+      "no-restricted-syntax": ["error", ...NO_INLINE_VALUES, ...NO_POSITIONAL_READS, ...NO_PROCESS_READS],
 
       // Every exported function has a doc comment: other files use it without reading its body.
       // A function used only in its own file gets one only when its name and code don't explain it.
@@ -107,7 +116,7 @@ export default [
   },
   {
     files: ["cli/run.mjs", "cli/hooks/*.mjs", "skills/*/scripts/*.mjs"],
-    rules: { "no-restricted-syntax": ["error", ...NO_INLINE_VALUES] },
+    rules: { "no-restricted-syntax": ["error", ...NO_INLINE_VALUES, ...NO_POSITIONAL_READS] },
   },
   {
     // Tests keep fixture values and expected-output patterns inline, where they read best, and may ask the

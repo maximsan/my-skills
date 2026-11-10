@@ -78,9 +78,10 @@ Each item waits for the steps above, unless it says otherwise.
 
 **Checks for other languages**
 
-- Give TypeScript the same lint rules as JavaScript: a TypeScript-aware version of `eslint.config.mjs`, using the
-  `typescript-eslint` package.
-- Give Dart the owner's naming rules, such as reaching data by name, as custom analyzer rules.
+- Add a TypeScript version of this repo's `eslint.config.mjs`, with the same rules, built on the `typescript-eslint`
+  package. Projects with TypeScript can then use it.
+- Check the owner's code rules in Dart, such as reaching data by name (`match.groups.folder`, not `match[1]`). Write
+  them as an analyzer plugin, Dart's way to add custom lint rules, available since Dart 3.10.
 
 **Disk use**
 

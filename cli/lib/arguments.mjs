@@ -51,7 +51,7 @@ const HELP_TEXT_WIDTH = 80;
 const HELP_INDENT = "  ";
 
 /** Node's parseArgs error names the unknown flag between single quotes. */
-const QUOTED_NAME = /'([^']+)'/;
+const QUOTED_NAME = /'(?<name>[^']+)'/;
 
 /**
  * @typedef {object} ParsedArguments
@@ -81,7 +81,8 @@ export const parseArguments = (argv, commands) => {
   try {
     parsed = parseArgs({ args: argv, options, allowPositionals: true, strict: true });
   } catch (error) {
-    const unknown = String(error instanceof Error ? error.message : error).match(QUOTED_NAME)?.[1] ?? argv.join(" ");
+    const errorText = String(error instanceof Error ? error.message : error);
+    const unknown = errorText.match(QUOTED_NAME)?.groups?.name ?? argv.join(" ");
 
     throw new UsageError(`Unknown option "${unknown}". Run ${COMMAND_NAME} --help.`);
   }

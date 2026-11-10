@@ -38,7 +38,7 @@ const COMMANDS_CODE_BLOCK = /(## Commands\n\n)```[\s\S]*?```/;
 const COMMANDS_HEADING = /^##\s+Commands\b/m;
 
 /** An `@` import line; group 1 is the path. */
-const IMPORT_LINE = /^@(\S.*)$/;
+const IMPORT_LINE = /^@(?<target>\S.*)$/;
 
 /** The characters that mean something special inside a regular expression. */
 const REGEXP_SPECIAL_CHARACTERS = /[.*+?^${}()|[\]\\]/g;
@@ -279,10 +279,10 @@ export const importTargets = (text) => {
       isInFence = !isInFence;
     }
 
-    const match = !isInFence && line.trim().match(IMPORT_LINE);
+    const target = isInFence ? undefined : line.trim().match(IMPORT_LINE)?.groups?.target;
 
-    if (match) {
-      targets.push(match[1]);
+    if (target) {
+      targets.push(target);
     }
   }
 

@@ -22,7 +22,11 @@ const LINE_BREAK = /\r?\n/;
  * @param {string} version e.g. "v20.11.0"
  * @returns {number} the major version, e.g. 20
  */
-const nodeMajorVersion = (version) => Number(version.replace(VERSION_PREFIX, "").split(".")[0]);
+const nodeMajorVersion = (version) => {
+  const [major] = version.replace(VERSION_PREFIX, "").split(".");
+
+  return Number(major);
+};
 
 /**
  * The checks for the tools this CLI needs: a new enough Node, and git on PATH. doctor shows both. setup only needs

@@ -315,7 +315,9 @@ export const createAsker = ({ input, output, signal, isInteractive, assumeDefaul
     const picked = mayReadKeys() ? await pickWithKeys(title, items, "one", { cursor: defaultIndex }) : null;
 
     if (picked) {
-      return picked[0];
+      const [pickedItem] = picked;
+
+      return pickedItem;
     }
 
     const keys = printTypedList(title, items, [], "one");

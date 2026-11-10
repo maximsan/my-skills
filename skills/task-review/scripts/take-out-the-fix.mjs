@@ -376,7 +376,8 @@ const parseRequest = (args) => {
   }
 };
 
-const isEntryPoint = process.argv[1] !== undefined && import.meta.url === pathToFileURL(process.argv[1]).href;
+const [, scriptPath] = process.argv;
+const isEntryPoint = scriptPath !== undefined && import.meta.url === pathToFileURL(scriptPath).href;
 
 if (isEntryPoint) {
   const request = parseRequest(process.argv.slice(2));

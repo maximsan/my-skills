@@ -95,7 +95,11 @@ const fixForUnreadableRepository = (directory, stderr) =>
  * @param {import("./exec.mjs").ProcessResult} result the finished git command's output and exit code
  * @returns {string} the reason to show the user
  */
-const firstErrorLine = (result) => result.stderr.trim().split(LINE_BREAK)[0] || `exit code ${result.code}`;
+const firstErrorLine = (result) => {
+  const [firstLine] = result.stderr.trim().split(LINE_BREAK);
+
+  return firstLine || `exit code ${result.code}`;
+};
 
 /**
  * The git questions the CLI asks, all run with the same safe settings and the run's stop signal.
@@ -151,8 +155,10 @@ export const createGit = ({ env, signal, onCommand = () => {} }) => {
       return result;
     }
 
+    const [subcommand] = args;
+
     throw new StepFailure(
-      `git ${args[0]} failed in ${cwd}: ${firstErrorLine(result)}`,
+      `git ${subcommand} failed in ${cwd}: ${firstErrorLine(result)}`,
       fixForUnreadableRepository(cwd, result.stderr),
     );
   };
@@ -166,7 +172,9 @@ export const createGit = ({ env, signal, onCommand = () => {} }) => {
     try {
       const result = await run(["--version"], cwd);
 
-      return result.stdout.match(VERSION_NUMBER)?.[0] ?? null;
+      const [installedVersion] = result.stdout.match(VERSION_NUMBER) ?? [null];
+
+      return installedVersion;
     } catch (error) {
       if (error instanceof StepFailure) {
         return null;

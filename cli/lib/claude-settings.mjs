@@ -180,7 +180,9 @@ export const readReminderState = (text, layout) => {
     return { kind: "duplicated" };
   }
 
-  return isUpToDate(entries[0], layout) ? { kind: "present" } : { kind: "outdated" };
+  const [onlyEntry] = entries;
+
+  return isUpToDate(onlyEntry, layout) ? { kind: "present" } : { kind: "outdated" };
 };
 
 /**

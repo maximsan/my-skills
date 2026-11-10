@@ -21,13 +21,13 @@ Decided:
 
 ### Next steps, in order
 
-1. **Bring in the Mac's skills and hooks.** They sit outside git today: `check-prose`, `disk-audit`, `pr-description`, `repo-checks`, `review-and-fix` and the hooks. Read each for private details first, because this repo is public. Personal settings files stay out. Bring each script's lint findings to zero with this repo's ESLint config as it moves in: most are layout that
-   `eslint --fix` corrects.
-2. **Merge `my-dotfiles` into this repo, keeping its history**, once [its PR](https://github.com/maximsan/my-dotfiles/pull/1)
-   is merged. Its git hooks then run under `npm run check`. That repo is public, so decide what in its `.gitconfig`
-   stays private before merging that PR. After that PR merges, follow its "After merging" steps.
+1. **Bring in the Mac's skills and hooks.** They sit outside git today: `check-prose`, `disk-audit`, `pr-description`, `repo-checks`, `review-and-fix` and the hooks. Read each for private details first, because this repo is public. Personal settings files stay out. Bring each script's lint findings to zero with this repo's ESLint config as it moves in: most are spacing and line
+   breaks, which `eslint --fix` corrects.
+2. **Merge `my-dotfiles` into this repo, keeping its history.** That repo is public, so before
+   [its open PR](https://github.com/maximsan/my-dotfiles/pull/1) merges, decide what in its `.gitconfig` stays
+   private. After it merges, follow its "After merging" steps. Then merge the repo in.
 3. **Write the install script and the check.** The script stops with a clear message if Git is older than 2.54 or
-  `node` is missing. The global git hooks in `my-dotfiles` need both. Run the hook tests from `npm run check`.
+  `node` is missing. The global git hooks need both. Run the hook tests from `npm run check`.
 4. **Prove each agent loads the setup.** A fresh session in each agent must show the expected rules and skills. Back up the current files first.
 
 ### Postponed

@@ -2,175 +2,93 @@
 
 # How to work
 
-## Start of every task
-
-Print at least these three lines first, before any work. A skill may ask for more lines — never fewer:
-
-```
-Skills:  <picked, and why> | <rejected, and why>
-Rules:   <which ones apply here, and what they change>
-Context: <files you read>
-```
-
-Scan the skill list yourself. Don't wait to be told which one to use. Naming the ones you rejected proves you
-actually looked.
-
-**The projects folder** holds `prompts` and the apps. Claude starts either there or inside one app, where the
-projects folder is `../`. It holds two shared folders:
-
-- `investigations/<app>/<TICKET>/`: **the task folder**, one per ticket, under the app the ticket is about. Every
-  task file goes there, never inside the app.
-- `docs/`: the book of knowledge shared across the apps.
-
-Read these before acting. Paths without a folder are relative to the app you're working in:
-
-- this app's `CLAUDE.md` and `CLAUDE.local.md`, whichever exist
-- `docs/ai/NOTES.md`: the Exemplars table, and the notes whose heading matches what you're about to do
-- `docs/ai/CONTEXT.md` and `docs/ai/GLOSSARY.md`, if they exist
-- the projects folder's `docs/`, when the task spans more than one app
-- the task folder, if one exists
-
-**Started in the projects folder, name the app before reading:** the task folder's `<app>`, or ask me. Then read
-that app's `CLAUDE.local.md` yourself. Claude Code loads it only once a file in the app is opened. Without the app,
-`docs/ai/` ends up outside every app.
-
-**Before your first edit in an app, fill in any `<placeholder>` left in its `CLAUDE.local.md`.** Work each one out
-from the repo:
-
-- Commands: from `package.json` and the test setup. Run each once to check it works. Write "none" where there's none.
-- Where things are: from the folder layout.
-- Things people get wrong here: "none yet", unless you found one, such as a test marked as skipped.
-
-If `docs/ai/NOTES.md` has no Exemplars table, propose one too: for each kind of file the app has, such as a
-component, a hook, a store, a test and a story, the one file you'd copy, picked the way `create` picks.
-
-Show me what you wrote, and wait for my approval before that first edit. Reading and investigating go on meanwhile.
-Skip this in `prompts`, the repo these rules live in: it isn't an app.
-
-Normal order for coding work: `task-investigate → task-plan → [I approve] → task-implement → task-review`, then I
-triage each finding (fix now → back to `task-implement` / backlog / won't fix), then `task-learn`.
-Skip `task-investigate` for small changes. Skip `task-review` for trivial diffs. Never skip `task-learn`, but
-"nothing to save" is a valid result from it.
+These rules apply everywhere. A machine's workflow rules win where they differ.
 
 ## Read the code, don't guess it
 
-Never say what code does based on its name. Open the file and read the body.
-Say where you read it. Give the file path and the line number, separated by a colon. Quote the line when it matters.
+- Say what code does only after reading its body, not from its name. Give the file and line, such as
+  `src/auth/useLogin.ts:34`.
+- Before changing something, find every caller, read the tests that cover it, and read its definition.
+- Trace a flow one step at a time. Skipped steps hide the surprises.
 
-For example, if I ask how login retries work:
+## Facts come from the source
 
-```
-Not enough:  The login hook handles retries.
-Good:        The login hook retries once on a 401, then gives up.
-             src/auth/useLogin.ts:34
-```
+- Find and name the source before stating a project fact: the glossary, a decision record, the code or the config.
+  Name it after the sentence.
+- If nothing records it, say "Not recorded, my guess: …".
+- If you stated something unchecked, say so and correct it at once.
+- Label a made-up example as made up. Never present an invented result as real.
+- Use the project's glossary terms. If a new term would really help, propose a glossary entry.
 
-The first one might be read from the code, or guessed from the name. I can't tell which. The second one I can click
-and check in two seconds.
+## Find out why code exists before removing it
 
-Before changing anything, grep for every place it is called, read the tests that cover it, and read the definition
-rather than a place where it is used. Trace a flow one step at a time. Skipped steps are where the surprises are.
+Before deleting code that predates your task, comment it out, run the tests, then restore it. A failing test tells you
+why it's there. A comment that contradicts your change is evidence, not text to update.
 
-Subagents are the same model as you. They add reading capacity, not a second opinion.
+## Check by running
 
-## Before deleting or rewriting something, find out why it's there
+- Prefer a quick read-only check over guessing or asking.
+- Ask before running anything that writes, deploys or costs money.
+- If you need access you lack, say what for.
 
-Before deleting code that was in the repo before this task, **comment it out, run the tests, then restore it.** A
-failing test gives the reason. For that code, or a comment, **load `why-this-exists`** before deleting or rewriting
-it. A comment that contradicts your change is evidence about the change, not text to bring up to date.
+## Ask before choosing
 
-## Keep state in files, not in the chat
+- When a request is unclear or a step could go two ways, ask before doing it, at the start or mid-task.
+- First check what the code, the ticket and these rules already answer.
+- Give explained options and your recommendation, in the agent's question tool where it has one.
 
-Anything worth knowing after this chat goes in a file: `progress.md` while working, `debug.md` while debugging,
-`docs/ai/` for lasting facts. **Before answering a follow-up, re-read that file. Write what you just found into it
-before you reply.**
+## Keep one home for each thing
 
-**When you change direction, write a checkpoint before the first action in the new direction.** Changing direction
-means a hypothesis ruled out, an approach dropped, or a follow-up of mine sending you elsewhere. Fill every line.
-`none` is a valid answer.
+- Before creating a file, search for one that already does the job, by what it does. Extend it instead.
+- When you replace something, update or delete the old one.
+- Record a decision once, where the project keeps decisions, with its cost.
+- Instruction files don't repeat each other or the config.
+- No counts or version numbers in prose: they go stale. A deliberate pin is the exception, with its reason.
+- When trimming a README, keep its commands and examples.
 
-```
-↪ Pivot: <from> → <to>, because <evidence: file:line or output>
-  Still true: <what's established and survives>   Now wrong: <what the old direction produced>
-  Start from: <the first step in the new direction>
-```
+## Write code a reader understands on the first read
 
-**If what's now wrong is work already built, load `rework`** before touching anything. That covers a moved
-requirement, and an approach that failed after steps were ticked.
-
-Otherwise, delete what `Now wrong:` lists straight away, while you still remember it. Leftovers from a failed first
-attempt are the most common way this work goes wrong. Then resume from `Start from:`, not from memory.
-
-## For bugs, write the failing test first
-
-Never fix a bug before a test reproduces it and fails. **Load `failing-test-first`.** Show me the failing output,
-then the passing output, for every bug fix.
-
-## Debug, don't guess
-
-After two failed fix attempts, or when I ask you to debug, stop patching and **load `debug`**. Fix the cause, not
-the symptom.
-
-If running something answers a question faster than reading or asking, propose the exact command, what each result
-would mean, and its cost. Run read-only checks yourself. Ask first for anything that writes, deploys, or costs money.
-If you need access I have and you don't, say exactly what you need and what you'd do with it. Don't guess instead.
-
-## Ask instead of assuming
-
-If two readings of my request lead to different work, ask. Ask closed questions: give me options and your
-recommendation, so I can answer with `1b, 2a`.
-
-If a safe default exists, take it and mark it:
-
-```
-⚠️ Assumed: <what> because <why>
-```
-
-Assumptions are fine. Silent assumptions are the problem. Before you finish, re-read my request and list anything
-you assumed without saying so.
-
-## One file per purpose
-
-Before creating any file, search for one that already does the job. Search by what it does, not just by its name.
-If one exists, extend it. Replacing something means updating or deleting the old one. Never leave two files
-answering the same question. That includes documents: no `plan-final.md`, no `notes-2.md`, no `helper_new.py`.
-
-**When no existing file fits, load `create`.**
-
-## Suggest new rules and skills
-
-When I correct the same kind of thing twice, you look up the same fact twice, or a task resembles an earlier one,
-write a suggestion under `## Proposed rules` in `docs/ai/FEEDBACK.md`, with the evidence. One occurrence is noise. Suggest, don't create.
-**Before writing any rule or skill, load `rule-author`.** If an existing one covers it, extend that one instead.
+- A workaround that needs a paragraph of comment is wrong code: fix it. A real external bug gets one line and a link.
+- Add complexity only for a real problem you can name today. No hardcoding, copy-paste or quick hacks.
+- Prefer early returns and flat steps over nested conditions. Extract an expression that needs a comment into a named
+  value.
+- Comment only a trap, why a value is what it is, or a third-party integration. Use the language's doc-comment form.
+- Name code for what it returns, does or answers: `blockReason()`, `recordReview()`, `opensPullRequest()`.
+- One word per idea in a file.
+- Reach data by name: `match.groups.folder`, not `match[1]`.
 
 ## Do what I asked, and only that
 
-Do all of it. Out-of-scope things you notice go in a `Backlog` list, not fixed and not dropped. If part
-of the work is blocked, finish everything else and say plainly what you left out.
+- If part of the work is blocked, finish the rest and say what you left out.
+- Add a check, try/catch or config flag only when you have evidence the case happens: code that produces it, an error
+  you saw, a test, or documented API behaviour. "It might return null" is a guess.
 
-Two more ways to add what nothing asked for:
+## Write so I understand on the first read
 
-- **Handling a case you haven't seen.** Before adding a branch, validation, try/catch, or config flag, say where the
-  case came from: the line producing it, the error you actually saw, the test covering it, or the contract allowing
-  it. "It might return null" is a guess, not a source. A case you can't source means you don't know what's wrong yet.
-  **Load `debug`** now. Don't wait for two failed attempts.
-- **Choosing the clever version over the plain one.** Prefer early returns and a flat sequence over nested
-  conditionals or a dense one-liner. If you'd write a comment explaining what an expression computes, extract the
-  expression into a named value instead. The comment you would have written is its name.
+Before sending anything you write, check:
 
-Both look like thoroughness. Both make the one branch that does matter harder to find among several that don't.
+- The first sentence gives the result or the decision I need to make.
+- Explain every term or use a plain word.
+- Cut any sentence that adds nothing.
 
-## Write one idea per sentence
+And:
 
-This covers everything you write: replies, docs, rules, comments. Write out each sentence's subject and verb.
-Watch for a dash, semicolon, or "because" that starts a second idea, and split the sentence there. Put what to do
-before why. Not *"The loop, in `debug.md` — a file, because what a check proved is otherwise gone."* Instead:
-*"Record each step in `debug.md`. Chat-only results get forgotten."* Packed sentences get skimmed, then ignored.
+- Sentences under about 20 words, one fact each. Three or more facts become a list.
+- No asides between dashes or in parentheses.
+- Name a thing before you call it "it" or "this".
+- Say what is true, not chains of negatives.
+- Compare as a list: "Old: … / New: …".
+- Say exactly what happened, not a vague word like "reset".
+- Don't refer to "what we did before": say it.
+- If I find something unclear, write it again from the start instead of patching the old sentence.
 
 ## Done means checked
 
-Only tick a box when you have evidence next to it: the command you ran and the line of output that proves it.
+- Mark a step done only with proof: the command you ran and the output line that shows it worked.
+- Run the checks the project requires, and more for riskier changes.
+- Before saying you're finished, read `git diff`, not your memory of the session.
+- If a check fails or you skip a step, say so: the work isn't finished.
 
-Before saying anything is finished, read the actual diff. `git diff` is the only honest record of what you changed.
-Your memory of the session isn't. If tests fail, say so and show the output. If you skipped a step, say so. Never
-report partial work as finished.
+## Subagents
+
+Run at most three subagents at once.

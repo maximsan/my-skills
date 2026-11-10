@@ -7,13 +7,13 @@ description: This skill should be used when the user asks to "plan this", or ask
 
 Write a step-by-step plan. **Plan only. Implement nothing.**
 
-Task file: the path the user gave, or `task.md` in the task folder, as the common rules define it.
+Task file: the path the user gave, or `task.md` in the task folder, as the workflow rules define it.
 
 ---
 
 ## Step 1 — Orient
 
-Do the reading under *Start of every task* in the common rules. Print the three lines at the start, plus one:
+Do the reading under *Start of every task* in the workflow rules. Print the three lines at the start, plus one:
 
 ```
 Commit:  <short sha> (<branch>)
@@ -21,7 +21,7 @@ Commit:  <short sha> (<branch>)
 
 The commit goes in the plan's header. That's how anyone can tell later whether the plan has gone out of date.
 
-Read the task file. If it's missing or unreadable, stop and ask. That alone is a blocker.
+Read the task file. If it's missing or unreadable, stop and ask.
 
 ## Step 2 — Get the facts
 
@@ -41,22 +41,16 @@ needs its file path and line number.
 A plan built on a guessed function signature wastes an entire implementation session. The plan carries a
 **What the code does** table proving nothing was guessed.
 
-## Step 3 — Questions and blockers
+## Step 3 — Questions
 
 Work through [`../shared/open-questions.md`](../shared/open-questions.md), starting from the questions already in
 `findings.md`. Then act on each kind:
 
-- **BLOCKER**: stop and ask in chat. Write `plan.md` only once it's answered.
-- **ASSUMPTION**: log it and keep going.
+- **ANSWERED**: use the answer, with its source.
+- **QUESTION**: ask in chat, all of them at once. Write `plan.md` only once every one is answered.
 - **PROBE**: run the read-only ones now and fold in the results.
 
-For anything that genuinely needs the user, use the same marker as everywhere else. `rework` finds every assumption
-in the task folder by grepping for it. It will never see a second spelling. Write it like this:
-
-```
-⚠️ Assumed: <what> because <why>
-   Needs your input: <the question this is standing in for>
-```
+Record each answer in `findings.md`, under its question. `rework` re-checks them when a requirement changes.
 
 ## Step 4 — Check the draft
 
@@ -69,7 +63,7 @@ Check the draft against three things:
 
 1. Everything in Step 5, as a literal checklist.
 2. **Could someone who knows nothing about this conversation follow the plan without asking a single question?**
-   If not, something's missing or a question belongs in the blockers.
+   If not, something's missing or a question needs asking.
 3. Do all the code references still match the files at this commit?
 
 ## Step 5 — What the plan must contain
@@ -104,7 +98,7 @@ Tests are the automated coverage that keeps it right. Don't merge them.
 
 ## Step 6 — Write plan.md
 
-Save it in the task file's folder. If that can't be worked out, use the task folder from the common rules, with a short
+Save it in the task file's folder. If that can't be worked out, use the task folder from the workflow rules, with a short
 slug for the ticket, and say which slug was picked.
 
 If a `plan.md` is already there, **update it** rather than replacing it. Keep finished items and recorded results.
@@ -117,8 +111,8 @@ plan.
 # Plan: <ticket / short title>
 Commit: <sha> (<branch>) · Rules: <names> · Facts from: findings.md
 
-## Questions / Blockers
-Each with a proposed answer and what would change. `None` if there are none.
+## Questions
+Each with the user's answer from `findings.md`. `None` if there were none.
 
 ## What the code does
 | Function | Where | What it actually does |
@@ -143,7 +137,7 @@ Each with a proposed answer and what would change. `None` if there are none.
 ## Summary
 - What changes:
 - What gets tested:
-- Risks and assumptions:
+- Risks:
 ```
 
 ## Step 7 — Match the size of the task

@@ -16,6 +16,10 @@ Jump to:
 
 ## Rules and skills
 
+**owner** — the person these rules serve.
+
+**agent** — an AI coding tool that loads these rules, such as Claude Code, Codex, OpenCode or Cursor.
+
 **file path and line number** — e.g. `src/auth/useLogin.ts:34`. Points at one exact line in one exact file. Claude
 has to give one whenever it says something about your code, so you can click and check instead of taking its word.
 
@@ -87,13 +91,17 @@ rule and skill, here. Every app points at it.
 repository.
 
 **`projects\CLAUDE.md`, the shared rules file** — A file in the projects folder, above every app. Claude reads it
-whenever you work in any app below it. The tool puts one line in it: an `@` import of this repo's common rules. It sits
+whenever you work in any app below it. The tool puts two lines in it: `@` imports of this repo's common rules and task-flow workflow rules. It sits
 outside every repository, so it can't be committed by accident. Two other places a `CLAUDE.md` can live: inside one
 app, where it applies only there, or in your home folder at `%USERPROFILE%\.claude\`, where it applies to every repo
 on the machine, including ones outside `projects\`.
 
-**common rules** — `prompts\rules\common.md`. How Claude should work on every task, in every app: read the code
-before describing it, ask before assuming, and so on.
+**common rules** — `prompts\rules\common.md`. How an agent should work on every task, on every machine: read the code
+before describing it, write plainly, and so on.
+
+**workflow rules** — Files in `prompts\rules\workflows\`, one per way of running a task. `task-flow.md` holds task folders
+and the task skills, and `claude-rules setup` loads it. `github-flow.md` holds branches and pull requests, and the
+setup tool doesn't load it.
 
 **stack rules** — Files in `prompts\rules\` next to the common rules, one per technology: `react.md`,
 `typescript.md`, `microfrontend.md`. They only matter for apps that use that technology, so each app loads only the

@@ -7,74 +7,50 @@ What's planned but not built yet, and what it will need. Remove an entry once it
 Skills that create and edit GitHub issues from a task folder. They'll run the GitHub CLI, `gh`, so every computer that
 uses them needs it installed and signed in.
 
-### Installing `gh` without admin rights
-
-For a Windows computer where you can't run installers, such as a managed Windows environment. In Git Bash:
-
-```bash
-# 1. Find the latest version, e.g. 2.103.3
-VERSION=$(curl -sI https://github.com/cli/cli/releases/latest | grep -i '^location:' | sed 's#.*/tag/v##' | tr -d '\r')
-
-# 2. Download the portable zip, and extract it. The zip holds bin/gh.exe
-curl -L -o ~/gh.zip "https://github.com/cli/cli/releases/download/v${VERSION}/gh_${VERSION}_windows_amd64.zip"
-mkdir -p ~/gh-cli && unzip -o ~/gh.zip -d ~/gh-cli
-
-# 3. Put it on your PATH, now and in every new terminal
-export PATH="$HOME/gh-cli/bin:$PATH"
-echo 'export PATH="$HOME/gh-cli/bin:$PATH"' >> ~/.bashrc
-
-# 4. Check it, then sign in
-gh --version
-gh auth login
-```
-
-If `unzip` isn't found, extract with the `tar` that comes with Windows: `/c/Windows/System32/tar.exe -xf ~/gh.zip -C
-~/gh-cli`.
-
-To update, run the same steps again.
-
-**Don't run `npm install -g gh`.** That npm package is a different tool. It installs its own `gh` command, which can
-hide the real GitHub CLI on your PATH.
-
 ## One setup for every agent and machine
 
-The goal is one set of rules, skills and checks that Claude Code, Codex, OpenCode and Cursor all follow, on the Mac and on Windows.
+The goal is one set of rules, skills and checks that Claude Code, Codex, OpenCode and Cursor all follow, on the owner's personal Macs.
 
 Decided:
 
-- This repo holds the shared setup. The Mac comes first, and Windows follows once the Mac works.
+- This repo holds the shared setup for the owner's personal Macs. The work laptop keeps its own fork of this repo, so
+  no Windows setup is planned here.
 - A small install script and a read-only check for anything out of sync do the work. Git gives history and undo. A failed install is fixed by hand.
 - Each agent gets the setup through its own supported mechanism, and a project's own rules can only tighten it.
 - `~/.agents/skills` stays the folder agents find skills in, linked to this repo.
 
 ### Next steps, in order
 
-1. **Settle the shared rules.** Review the differences between the Mac's global rules, its Codex rules and `rules/common.md`. Load `rule-author` before writing them.
-   - Agents ask whenever a step could go more than one way, and never pick silently.
-   - The detailed writing rules stay in the shared rules, so every agent loads them.
-   - Decisions go in the issue or PR body. An agent comments only when a comment is really needed.
-   - Any work that changes a repo gets its own worktree. Reading and answering need none.
-   - Each machine keeps its own rule for small problems nearby: the Mac fixes them in the open branch, and Windows lists them in its Backlog.
-   - An example may be made up if it's clearly labelled. An invented result, measurement or scenario is never presented as real.
-   - Before finishing, an agent pushes every commit worth keeping to GitHub, and treats `/private/tmp` as disposable.
-   - Glossaries and comment syntax follow each project. Checks match the size of the risk. Design and provider preferences move into their own skills.
-2. **Split the rules.** `rules/common.md` keeps what both machines share. A workflow file for each machine takes the rest, including this file's Windows workflow rules, unchanged.
-3. **Bring in the Mac's skills and hooks.** They sit outside git today: `check-prose`, `disk-audit`, `pr-description`, `repo-checks`, `review-and-fix` and the hooks. Read each for private details first, because this repo is public. Personal settings files stay out.
-4. **Write the install script and the check.** Run the hook tests from `npm run check`.
-5. **Prove each agent loads the setup.** A fresh session in each agent must show the expected rules and skills. Back up the current files first.
+1. **Bring in the Mac's skills and hooks.** They sit outside git today: `check-prose`, `disk-audit`, `pr-description`, `repo-checks`, `review-and-fix` and the hooks. Read each for private details first, because this repo is public. Personal settings files stay out. Bring each script's lint findings to zero with this repo's ESLint config as it moves in: most are spacing and line
+   breaks, which `eslint --fix` corrects.
+2. **Merge `my-dotfiles` into this repo, keeping its history.** That repo is public, so before
+   [its open PR](https://github.com/maximsan/my-dotfiles/pull/1) merges, decide what in its `.gitconfig` stays
+   private. After it merges, follow its "After merging" steps. Then merge the repo in.
+3. **Write the install script and the check.** The script stops with a clear message if Git is older than 2.54 or
+  `node` is missing. The global git hooks need both. Run the hook tests from `npm run check`.
+4. **Prove each agent loads the setup.** A fresh session in each agent must show the expected rules and skills. Back up the current files first.
 
 ### Postponed
 
 Each item waits for the steps above, unless it says otherwise.
 
-**Windows**
+**Parts built for the work machine**
 
-- Install the shared setup on Windows. The rules here must keep working on the Claude Code version named in `CONTRIBUTING.md`.
+- The `claude-rules` setup tool, `rules/workflows/task-flow.md` and the task skills were built for the work laptop.
+  Decide which of them the personal Macs use.
+- Turn the rules for TypeScript, React and microfrontends into skills, so each loads only for that kind of work. They
+  are `rules/typescript.md`, `rules/react.md` and `rules/microfrontend.md`. Put them next to the `using-zod` skill.
+  Merge the general parts of `typescript-diagnostics`, from the `maximsan` project, into the TypeScript skill. Review
+  the new skills' wording line by line.
 
 **Other repos**
 
-- Merge `devkit` into this repo as a monorepo, keeping its history. Combine its `devclean` command with `disk-audit`, which overlap.
-- Merge `my-dotfiles` the same way. Decide first what stays private, and commit or drop the changes waiting in its `.zshrc` and `.gitconfig`. `~/.zshenv` isn't tracked anywhere yet.
+- Merge `devkit` into this repo, keeping its history, after `my-dotfiles`. Combine its `devclean` command with `disk-audit`, which overlap.
+
+**The Mac's global rules**
+
+- Shrink `~/.claude/CLAUDE.md` to pointers at `rules/common.md` and `rules/workflows/github-flow.md`. Personal lines, such as the owner's language, stay in that file.
+- Remove the Cloudflare rule from that file once a provider skill covers it. Move the design rules out at the same time, because `design-preferences` now holds them.
 
 **Agent gaps**
 
@@ -82,11 +58,10 @@ Each item waits for the steps above, unless it says otherwise.
 - Cursor's app was removed from the Mac, so its hooks are untested. When it's back, test them.
 - **Owner's note:** paste this into Cursor under Customize → Rules, because its global rules live in that settings screen:
 
-  > Before you finish, push every commit worth keeping to GitHub. Treat `/private/tmp` as disposable.
+  > Before you finish, push every commit worth keeping.
 
 - The review gate runs in Claude Code, Codex and OpenCode. Add it to Cursor once the app is back.
 - Rename or retire existing `codex/` branches. The branch-name rule only stops new ones.
-- Track `~/.git-hooks` in git, because the branch-name rule and attribution stripping live there, outside any repo.
 - Replace the old Codex command-line install. It can't read the current config, so `codex` fails in a terminal.
 - Test `review-and-fix` in Codex and OpenCode, because it depends on each agent's sub-agents.
 - The `git add` and zsh gates run only in Claude Code. The prose gate checks only `gh` issue and PR bodies in the other agents, and not questions or file edits.
@@ -99,6 +74,14 @@ Each item waits for the steps above, unless it says otherwise.
 - Compare which skills each agent can start on its own. Claude Code limits many of them to manual use, and Codex doesn't.
 - Pick one PR workflow from `pr` and `pr-description`.
 - Point `pr-description` and `review-and-fix` at the shared rules instead of the global `CLAUDE.md`.
+- Review the skills kept inside projects: `flutter-mobile-design` in `brewpath` and `react-component-architecture` in `cleanup-photos`. Move the general parts here, and leave what is about one project in that project.
+
+**Checks for other languages**
+
+- Add a TypeScript version of this repo's `eslint.config.mjs`, with the same rules, built on the `typescript-eslint`
+  package. Projects with TypeScript can then use it.
+- Check the owner's code rules in Dart, such as reaching data by name (`match.groups.folder`, not `match[1]`). Write
+  them as an analyzer plugin, Dart's way to add custom lint rules, available since Dart 3.10.
 
 **Disk use**
 

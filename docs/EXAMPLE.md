@@ -61,9 +61,10 @@ useSavedCards is called in 3 places: CheckoutPage.tsx:41, WalletPage.tsx:22, Pro
 WalletPage already guards with `cards?.length`. ProfileCards does not — same bug, not reported yet.
 
 ## Open questions
-1. BLOCKER — should a new account (null) and an emptied wallet ([]) look the same to the user?
+1. QUESTION — should a new account (null) and an emptied wallet ([]) look the same to the user?
    a) yes, both show the add-payment prompt  ← recommend
    b) no, new accounts get a different onboarding message
+   Answer: 1a (2026-08-10)
 ```
 
 **This is where it paid for itself.** My guess about the component was right, but the actual cause was two different
@@ -101,7 +102,6 @@ Next:      Step 2
 ### Step 2 — guard in PaymentSummary — done
 Files:     src/checkout/PaymentSummary.tsx
 Proof:     npm test PaymentSummary → 4 passed
-⚠️ Assumed: showing the same prompt for both empty states, per answer 1a
 ```
 
 The `Learned:` line matters. The plan said the error was `undefined`; the real one was `null`. Small, but a fix
@@ -153,8 +153,8 @@ The cards API returns [] for an emptied wallet and null for a new account. Guard
 src/payments/useSavedCards.ts → useSavedCards() · source: ORD-412 progress.md Step 1 · 2026-08-10
 ```
 
-That's the note I'd want in six months. One note from a whole ticket is normal. The `⚠️ Assumed:` line didn't
-become a note, because the assumption held, and a decision that held is already visible in the code.
+That's the note I'd want in six months. One note from a whole ticket is normal. The answer to question 1
+didn't become a note, because it held, and a decision that held is already visible in the code.
 
 ---
 

@@ -27,7 +27,7 @@ being skipped and why, then move to Step 2. Don't re-read files written minutes 
 against a commit that hasn't moved. That's theatre, not verification. Do all of it if the session was compacted in
 between, or if the plan comes from an earlier day.
 
-Do the reading under *Start of every task* in the common rules, and print the three lines at the start. For this
+Do the reading under *Start of every task* in the workflow rules, and print the three lines at the start. For this
 area, the notes in `NOTES.md` are what Step 2 means by "looks like the code around it".
 
 Read `plan.md`, plus `findings.md` and `progress.md` if they exist. Earlier sessions already worked things out. Use
@@ -80,10 +80,10 @@ Two rules for files during a build:
 
 ## Step 4 — When something doesn't work
 
-**When the common rules send this task to `debug`**, write only the result in `progress.md`: the real cause with its
+**When the workflow rules send this task to `debug`**, write only the result in `progress.md`: the real cause with its
 file and line, a pointer to `debug.md`, and the grep showing the temporary logging is gone.
 
-**When the direction changes, write the pivot checkpoint from the common rules into `progress.md`.** Its `Now wrong:`
+**When the direction changes, write the pivot checkpoint from the workflow rules into `progress.md`.** Its `Now wrong:`
 line lists everything the failed attempt added: files, functions, imports, config keys, flags, dependencies, tests,
 logs. List what was deleted under `Removed:`. Code added in this task needs no `why-this-exists` check before deleting
 it. The diff decides what this task added: a line that shows as an addition since the plan's base commit.
@@ -102,13 +102,11 @@ this section as the cheap early catch.
 
 ## Step 5 — When unsure, pick the right response
 
-**Just do it and note it** — the plan is clear, or there's one obvious right answer given the codebase.
+**Just do it and note it** — the plan is clear, or the code, the ticket or the rules give one right answer.
 
-**Do it, but flag it** — several answers are defensible and being wrong is cheap to fix. Pick one and write
-`⚠️ Assumed: <what> because <why>` in `progress.md`.
-
-**Stop and ask** — something is genuinely blocked, conflicts with the codebase, can't be undone, or a wrong choice
-would waste real work. Ask as a closed question with options and a recommendation.
+**Stop and ask** — anything else: several answers are defensible, something is blocked, it conflicts with the
+codebase, or it can't be undone. Ask as a closed question with options and a recommendation. Record the answer in
+`progress.md` as an `Answer:` line, shown in Step 6.
 
 ## Step 6 — Keep notes along the way
 
@@ -122,7 +120,7 @@ Proof:     npm test src/auth → 12 passed
 Learned:   the 401 handler already retried once — the plan assumed it didn't
 Removed:   nothing
 Next:      Step 4, needs the API mock from step 3
-Open:      should the retry count be configurable?
+Answer:    should the retry count be configurable? → no, one retry (2026-08-10)
 ```
 
 Keep `plan.md` current too — tick steps as they land, write verification results in place, tick tests as they get

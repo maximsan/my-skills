@@ -9,7 +9,7 @@ import { dirname } from "node:path";
 import { listAppFolders } from "../lib/apps.mjs";
 import { claudeSettingsFile, describeReminder, readReminderState, withReminderHook } from "../lib/claude-settings.mjs";
 import { COMMAND_NAME } from "../lib/constants.mjs";
-import { displayPath, homePath, installCommand, shortPath, spaceInPathWarning, toImportLine } from "../lib/layout.mjs";
+import { displayPath, homePath, installCommand, shortPath, spaceInPathWarning } from "../lib/layout.mjs";
 import {
   checkTools,
   countSkills,
@@ -17,6 +17,8 @@ import {
   describeSkillsLink,
   readCommandState,
   readSharedRulesState,
+  importedRuleLines,
+  withImportedRuleLines,
   readSkillsLinkState,
 } from "../lib/machine-setup.mjs";
 import { plural } from "../lib/text.mjs";
@@ -30,15 +32,14 @@ const NODE_VERSION_PREFIX = /^v/;
  */
 
 /**
- * Adds the `@` line that loads the shared rules into projects/CLAUDE.md, creating the file if needed.
+ * Adds the `@` lines that load the shared rules into projects/CLAUDE.md, creating the file if needed.
  * @param {import("../lib/contract.mjs").Context} context the run's layout, files and platform
- * @returns {import("../lib/contract.mjs").Step} the step that adds the line
+ * @returns {import("../lib/contract.mjs").Step} the step that adds the lines
  */
-const addSharedRulesLine = ({ layout, files, platform }) => ({
-  title: `Shared rules line in ${shortPath(layout, layout.sharedRulesFile)}`,
-  check: () => describeSharedRules(readSharedRulesState(layout, files, platform), layout),
+const addSharedRuleLines = ({ layout, files, platform }) => ({
+  title: `Shared rules lines in ${shortPath(layout, layout.sharedRulesFile)}`,
+  check: () => describeSharedRules(readSharedRulesState(layout, files, platform)),
   apply: () => {
-    const line = toImportLine(layout.commonRulesFile);
     const state = readSharedRulesState(layout, files, platform);
 
     if (state.kind === "present" || state.kind === "source-missing") {
@@ -46,7 +47,7 @@ const addSharedRulesLine = ({ layout, files, platform }) => ({
     }
 
     if (state.kind === "missing") {
-      files.writeTextAtomic(layout.sharedRulesFile, `${line}\n`);
+      files.writeTextAtomic(layout.sharedRulesFile, `${importedRuleLines(layout).join("\n")}\n`);
 
       return "created";
     }
@@ -54,9 +55,12 @@ const addSharedRulesLine = ({ layout, files, platform }) => ({
     // projects/CLAUDE.md is outside every repo, so the backup can sit beside it.
     const backupPath = files.backUp(layout.sharedRulesFile);
 
-    files.writeTextAtomic(layout.sharedRulesFile, `${line}\n${state.text}`);
+    files.writeTextAtomic(
+      layout.sharedRulesFile,
+      withImportedRuleLines(state.text, state.missingLines, layout, platform),
+    );
 
-    return `line added at the top; the old file is at ${displayPath(backupPath)}`;
+    return `lines added; the old file is at ${displayPath(backupPath)}`;
   },
 });
 
@@ -227,7 +231,7 @@ export const setup = {
   },
 
   steps: (context, _survey, answers) => [
-    addSharedRulesLine(context),
+    addSharedRuleLines(context),
     linkSkillsFolder(context, answers.mayReplaceOtherLink),
     addBugFixReminder(context),
   ],

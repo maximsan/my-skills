@@ -20,8 +20,9 @@ const HOME_PREFIX = "~/";
  * @property {string} repoFolderName e.g. "prompts", excluded from the app list
  * @property {string} projectsDirectory the folder holding this repo and the apps
  * @property {string} sharedRulesFile projects\CLAUDE.md, which applies to every app below it
- * @property {string} rulesDirectory the common rules and the stack rules, side by side
- * @property {string} commonRulesFile the rules the shared file points at
+ * @property {string} rulesDirectory the common rules and the stack rules, side by side, and the workflows folder
+ * @property {string} taskFlowRulesFile the task-folder workflow, which the shared file points at too
+ * @property {string} commonRulesFile the rules for every machine, which the shared file points at
  * @property {string} skillsLink projects\.claude\skills, for Claude started in the projects folder; an app that is a
  *   git repo never reads it, so add-app links each skill into the app as well
  * @property {string} skillsSource the skills folder in this repo the link points at
@@ -48,6 +49,7 @@ export const resolveLayout = (repoRoot) => {
     sharedRulesFile: join(projectsDirectory, "CLAUDE.md"),
     rulesDirectory,
     commonRulesFile: join(rulesDirectory, "common.md"),
+    taskFlowRulesFile: join(rulesDirectory, "workflows", "task-flow.md"),
     skillsLink: join(projectsDirectory, ".claude", "skills"),
     skillsSource: join(repoRoot, "skills"),
     notesTemplate: join(repoRoot, "templates", "CLAUDE.local.md.template"),

@@ -2,7 +2,7 @@
 // `setup` end to end, against a throwaway projects folder.
 
 import assert from "node:assert/strict";
-import { existsSync, mkdirSync, readFileSync, realpathSync, symlinkSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { dirname, join, sep } from "node:path";
 import { afterEach, beforeEach, test } from "node:test";
 import { doctor } from "../commands/doctor.mjs";
@@ -25,7 +25,8 @@ afterEach(() => sandbox.cleanUp());
 const RIGHT_FOLDER = { "Your apps live in": true };
 const GO_AHEAD = { "Go ahead?": true };
 
-const sharedRulesLine = () => toImportLine(sandbox.layout.commonRulesFile);
+const sharedRuleLines = () =>
+  [sandbox.layout.commonRulesFile, sandbox.layout.taskFlowRulesFile].map(toImportLine).join("\n");
 
 /**
  * Whether a link ends up at a folder. Both sides are resolved, since macOS's temp folder is itself behind a link.
@@ -42,7 +43,7 @@ test("a fresh computer: every step done, and the global git config untouched", a
   assert.equal(exitCode, EXIT_CODES.OK, ui.text());
   assert.match(ui.text(), /All 3 done\./);
   assert.match(ui.text(), /Next: add your first app: claude-rules add-app$/m);
-  assert.equal(readFileSync(sandbox.layout.sharedRulesFile, "utf8"), `${sharedRulesLine()}\n`);
+  assert.equal(readFileSync(sandbox.layout.sharedRulesFile, "utf8"), `${sharedRuleLines()}\n`);
   assert.ok(linksTo(sandbox.layout.skillsLink, sandbox.layout.skillsSource));
   assert.equal(readFileSync(sandbox.globalGitConfig, "utf8"), "", "setup must never change git settings");
 });
@@ -58,7 +59,7 @@ test("a second run finds everything already done, asks no confirmation, and does
 
   assert.match(output, /Nothing to do — everything is already in place\./);
   assert.deepEqual(scriptedAsk.questions, [], "the projects folder was confirmed on the first run");
-  assert.equal(output.match(/Shared rules line in/g)?.length, 1, "the rows are shown in the plan only");
+  assert.equal(output.match(/Shared rules lines in/g)?.length, 1, "the rows are shown in the plan only");
   assert.doesNotMatch(output, /\n\n\nNothing to do/, "one blank line between the plan and the heading");
 });
 
@@ -72,12 +73,39 @@ test("setup offers to add an app only while one is left to add", async () => {
   assert.equal(setup.followUp?.question(context), null);
 });
 
-test("an existing CLAUDE.md keeps its content, gets the line once, and is backed up", async () => {
+test("an existing CLAUDE.md keeps its content, gets the lines once, and is backed up", async () => {
   writeFileSync(sandbox.layout.sharedRulesFile, "My own rules.\n");
   await runCommand(setup, makeContext(sandbox, { answers: [RIGHT_FOLDER, GO_AHEAD] }).context);
   await runCommand(setup, makeContext(sandbox).context);
-  assert.equal(readFileSync(sandbox.layout.sharedRulesFile, "utf8"), `${sharedRulesLine()}\nMy own rules.\n`);
+  assert.equal(readFileSync(sandbox.layout.sharedRulesFile, "utf8"), `${sharedRuleLines()}\nMy own rules.\n`);
   assert.equal(readFileSync(`${sandbox.layout.sharedRulesFile}.bak`, "utf8"), "My own rules.\n");
+});
+
+test("a CLAUDE.md importing only the common rules gets the missing line, and doctor asks for it", async () => {
+  const oldFile = `${toImportLine(sandbox.layout.commonRulesFile)}\nMy own rules.\n`;
+
+  writeFileSync(sandbox.layout.sharedRulesFile, oldFile);
+
+  const doctorRun = makeContext(sandbox);
+
+  await runCommand(doctor, doctorRun.context);
+  assert.ok(doctorRun.ui.text().includes(`doesn't have ${toImportLine(sandbox.layout.taskFlowRulesFile)} yet`));
+
+  await runCommand(setup, makeContext(sandbox, { answers: [RIGHT_FOLDER, GO_AHEAD] }).context);
+  assert.equal(
+    readFileSync(sandbox.layout.sharedRulesFile, "utf8"),
+    `${sharedRuleLines()}\nMy own rules.\n`,
+  );
+  assert.equal(readFileSync(`${sandbox.layout.sharedRulesFile}.bak`, "utf8"), oldFile);
+});
+
+test("a rule file missing from this repo is blocked, and the message names it", async () => {
+  rmSync(sandbox.layout.taskFlowRulesFile);
+
+  const doctorRun = makeContext(sandbox);
+
+  await runCommand(doctor, doctorRun.context);
+  assert.match(doctorRun.ui.text(), /task-flow\.md is missing from this repo/);
 });
 
 test("a real skills folder with files in it is blocked, never deleted, and doctor gives the same reason", async () => {
@@ -98,7 +126,7 @@ test("a real skills folder with files in it is blocked, never deleted, and docto
   assert.equal(readFileSync(join(sandbox.layout.skillsLink, "my-skill.md"), "utf8"), "mine");
   assert.equal(
     readFileSync(sandbox.layout.sharedRulesFile, "utf8"),
-    `${sharedRulesLine()}\n`,
+    `${sharedRuleLines()}\n`,
     "the other step still ran",
   );
 
@@ -128,7 +156,7 @@ test("--dry-run shows the plan and writes nothing", async () => {
   const { context, ui } = makeContext(sandbox, { answers: [RIGHT_FOLDER], options: { dryRun: true } });
 
   assert.equal(await runCommand(setup, context), EXIT_CODES.OK);
-  assert.match(ui.text(), /^ {2}1 {2}Shared rules line in projects\/CLAUDE\.md — create it, with the line$/m);
+  assert.match(ui.text(), /^ {2}1 {2}Shared rules lines in projects\/CLAUDE\.md — create it, with the lines$/m);
   assert.match(ui.text(), /^ {2}2 {2}Link .* — create the link$/m, "the plan says what it will do, once");
   assert.match(ui.text(), /Dry run: nothing was changed\./);
   assert.deepEqual(snapshotFolder(sandbox.root), before);

@@ -33,7 +33,7 @@ List every candidate, each with the line it came from. **These are the only sour
 | Source | What to look for |
 |---|---|
 | `progress.md` | `Learned:` lines |
-| `progress.md`, `plan.md` | `⚠️ Assumed:` lines that turned out wrong |
+| `findings.md`, `progress.md` | `Answer:` lines that turned out wrong |
 | `debug.md` | The confirmed cause, and anything ruled out that looked likely |
 | `review.md` | Findings marked **won't fix**, with their reason — a thing that looks wrong and isn't |
 | `plan.md` | Deviations — where the code turned out different from what the plan expected |
@@ -153,7 +153,7 @@ following [`feedback-review.md`](feedback-review.md). With no such line yet, cou
 
 ### Proposed rules: only for repeats
 
-Suggest a rule only for a repeat (see *Suggest new rules and skills* in the common rules), with the evidence. Say
+Suggest a rule only for a repeat (see *Suggest new rules and skills* in the workflow rules), with the evidence. Say
 whether it's specific to this project or true everywhere. Write it with the `rule-author` skill.
 
 ## Step 6 — Propose, wait, write

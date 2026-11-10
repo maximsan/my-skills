@@ -14,7 +14,7 @@ node <projects folder>/prompts/skills/task-review/scripts/take-out-the-fix.mjs -
 ```
 
 - `<base>` is the `Commit:` sha in `plan.md`.
-- `<task folder>` is the ticket's folder, as the common rules define it.
+- `<task folder>` is the ticket's folder, as the task-flow workflow rules define it.
 - The files are the fix's files only, new ones included. Never list the new test's file: it must stay while it runs.
 - The test command runs in the system's shell, which is `cmd` on Windows, not Git Bash. Use a plain command, such
   as `npx jest src/cart/total.test.ts`, with no Bash-only syntax.

@@ -114,7 +114,7 @@ const checkReminderRuns = async ({ layout, env, signal }, present) => {
 const checkSharedRules = (context) => {
   const { layout, files, platform } = context;
   const state = readSharedRulesState(layout, files, platform);
-  const result = withSetupFix(describeSharedRules(state, layout));
+  const result = withSetupFix(describeSharedRules(state));
 
   if (state.kind !== "present") {
     return result;
@@ -137,7 +137,7 @@ const checkSharedRules = (context) => {
     };
   }
 
-  return { status: "done", reason: "the line is there, and every @ line points at a real file" };
+  return { status: "done", reason: "the lines are there, and every @ line points at a real file" };
 };
 
 /**

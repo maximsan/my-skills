@@ -16,7 +16,7 @@ the chat. Two follow-up questions later it's gone. Then the same ground gets cov
 
 ## Where things go
 
-In the task folder, as the common rules define it:
+In the task folder, as the task-flow workflow rules define it:
 
 ```
 investigations/<app>/<TICKET>/
@@ -133,7 +133,7 @@ answer needs something new, run a check and add it. **Don't re-derive a fact the
 contradict one without a check that overturns it.** If one is overturned, say so, and mark every conclusion that
 rested on it.
 
-If the question changes what is being chased, it's a pivot. Write the pivot checkpoint from the common rules into the
+If the question changes what is being chased, it's a pivot. Write the pivot checkpoint from the task-flow workflow rules into the
 ledger before the first check in the new direction.
 
 ## 9. When nothing is narrowing
@@ -183,7 +183,7 @@ Log: scratch/logs/03-order.log   Filter: grep -n "\[DBG C3\]" 03-order.log
 Result: H2 confirmed. Tags counted: 3, from this run (t after build).
 
 ## Pivots
-<checkpoints, as the common rules describe them>
+<checkpoints, as the task-flow workflow rules describe them>
 
 Next: failing test for the retry order, then remove [DBG] logs
 ```

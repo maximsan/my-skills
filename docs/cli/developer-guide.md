@@ -165,8 +165,8 @@ change nothing, and a stopped run carry on where it left off.
 ### Add a stack
 
 1. Add the rule file, e.g. `rules/java.md`, starting with a `# Java conventions` heading.
-2. That's enough for `add-app` to offer it, unticked. "Without the CLI" in TROUBLESHOOTING.md says "every file in
-   `rules/` except `common.md`", so it needs no change.
+2. That's enough for `add-app` to offer it, unticked. "Without the CLI" in TROUBLESHOOTING.md says "every file directly in
+   `rules/` except `common.md`", so it needs no change. A file in `rules/workflows/` is never offered.
 3. To detect it, add one entry to `STACK_DETECTORS` in [lib/stacks.mjs](../../cli/lib/stacks.mjs). The entry
    returns why the stack applies (`"pom.xml found"`), or `null`. Copy the `typescript` entry.
 4. If detection needs a file's contents, not just its name, read it once in `readAppFacts` in

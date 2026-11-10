@@ -48,6 +48,14 @@ Rules load on every turn, so each line costs attention on every task. Before add
   nothing on the days X doesn't load. The procedure lives in the skill. The trigger and the first action stay here.
 - **If a topic needs more room, make it a skill** that loads when that work comes up.
 
+### The workflow rules
+
+`rules/workflows/` holds one file per way of running a task. Where a workflow file differs from the common rules, it
+wins. `claude-rules setup` loads `task-flow.md`. Nothing loads `github-flow.md` yet.
+
+A rule goes here when it's true for one workflow only, or when skills depend on its exact text. Keep each file under
+200 lines. A workflow file may name the folders that workflow uses.
+
 ### The stack files
 
 `rules/react.md` and `rules/microfrontend.md` load on every turn of every task in a matching app, so what's in
@@ -63,7 +71,7 @@ gets skimmed. Code written inline that should have been a named value is mostly 
 inline literals, `sonarjs/cognitive-complexity` and `complexity` for expressions doing too much at once, `max-depth`
 and `max-nested-callbacks` for nesting, and `max-len` to force long chains apart. What survives all of those —
 whether a particular expression has a concept behind it worth naming — is the only part that needs a written rule,
-and it's in `rules/common.md` under "Do what I asked, and only that".
+and it's in `rules/common.md` under "Write code a reader understands on the first read".
 
 Then three rules:
 

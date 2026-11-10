@@ -76,6 +76,12 @@ Each item waits for the steps above, unless it says otherwise.
 - Point `pr-description` and `review-and-fix` at the shared rules instead of the global `CLAUDE.md`.
 - Review the skills kept inside projects: `flutter-mobile-design` in `brewpath` and `react-component-architecture` in `cleanup-photos`. Move the general parts here, and leave what is about one project in that project.
 
+**Checks for other languages**
+
+- Give TypeScript the same lint rules as JavaScript: a TypeScript-aware version of `eslint.config.mjs`, using the
+  `typescript-eslint` package.
+- Give Dart the owner's naming rules, such as reaching data by name, as custom analyzer rules.
+
 **Disk use**
 
 - Add a script that lists clean, merged worktrees for the owner to approve for removal.

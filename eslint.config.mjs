@@ -34,6 +34,7 @@ const NO_INLINE_VALUES = [
 
 // Data is reached by name, not by position: `const [, scriptPath] = process.argv` or `match.groups.folder`, never
 // `process.argv[1]`, `match[1]` or `items.at(1)`. A reader then knows what the value is without counting slots.
+// `items.at(-1)` stays allowed: it reads as "the last item", with no slots to count.
 const POSITION_MESSAGE = "Reach this by name: destructure it into a named value, or use a named regex group.";
 const NO_POSITIONAL_ACCESS = [
   { selector: "MemberExpression[computed=true][property.value=type(number)]", message: POSITION_MESSAGE },

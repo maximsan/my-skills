@@ -99,7 +99,15 @@ const collectAppResults = async (context, app) => {
  * @param {string[]} reasons what was found, one entry each
  * @returns {{ reason: string } | { points: string[] }} the reason when there's one, the points otherwise
  */
-const asReasonOrPoints = (reasons) => (reasons.length === 1 ? { reason: reasons[0] } : { points: reasons });
+const asReasonOrPoints = (reasons) => {
+  if (reasons.length !== 1) {
+    return { points: reasons };
+  }
+
+  const [onlyReason] = reasons;
+
+  return { reason: onlyReason };
+};
 
 /**
  * Turns everything found in one app into its one row. Problems block, and each one's fix is listed once. With no

@@ -9,7 +9,8 @@
 
 import { COMMAND_NAME, MINIMUM_NODE_MAJOR } from "./lib/constants.mjs";
 
-const nodeMajor = Number(process.versions.node.split(".")[0]);
+const [nodeMajorText] = process.versions.node.split(".");
+const nodeMajor = Number(nodeMajorText);
 
 if (nodeMajor < MINIMUM_NODE_MAJOR) {
   process.stderr.write(

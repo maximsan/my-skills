@@ -32,13 +32,13 @@ const SECTION_HEADING_PREFIX = "## ";
 /** A placeholder in the template, such as `<run one test>`: a letter after `<`, all on one line. */
 const PLACEHOLDER = /<[A-Za-z][^<>\n]*>/g;
 
-/** The fenced code block under "## Commands", with the heading kept in group 1. */
-const COMMANDS_CODE_BLOCK = /(## Commands\n\n)```[\s\S]*?```/;
+/** The fenced code block under "## Commands", with the heading kept in the `heading` group. */
+const COMMANDS_CODE_BLOCK = /(?<heading>## Commands\n\n)```[\s\S]*?```/;
 
 const COMMANDS_HEADING = /^##\s+Commands\b/m;
 
-/** An `@` import line; group 1 is the path. */
-const IMPORT_LINE = /^@(\S.*)$/;
+/** An `@` import line; the `target` group is the imported path. */
+const IMPORT_LINE = /^@(?<target>\S.*)$/;
 
 /** The characters that mean something special inside a regular expression. */
 const REGEXP_SPECIAL_CHARACTERS = /[.*+?^${}()|[\]\\]/g;
@@ -129,12 +129,12 @@ export const renderNotes = (template, { projectName, importLines, commands, comm
   keepingLineEndings(template, (text) => {
     let notes = text
 
-      // Function replacers: a name or path holding "$&" or "$1" must go in as it is, not as a replacement pattern.
+      // Function replacers: a name or path holding "$&" or "$<name>" must go in as it is, not as a replacement pattern.
       .replace("<Project name>", () => projectName)
       .replace(STACK_RULES_PLACEHOLDER, () => (importLines.length > 0 ? importLines.join("\n") : NO_STACK_RULES));
 
     if (commandsLiveInProjectFile) {
-      return notes.replace(COMMANDS_CODE_BLOCK, "$1See the project's own `CLAUDE.md`.");
+      return notes.replace(COMMANDS_CODE_BLOCK, "$<heading>See the project's own `CLAUDE.md`.");
     }
 
     for (const [placeholder, command] of commands) {
@@ -279,10 +279,10 @@ export const importTargets = (text) => {
       isInFence = !isInFence;
     }
 
-    const match = !isInFence && line.trim().match(IMPORT_LINE);
+    const target = isInFence ? undefined : line.trim().match(IMPORT_LINE)?.groups?.target;
 
-    if (match) {
-      targets.push(match[1]);
+    if (target) {
+      targets.push(target);
     }
   }
 

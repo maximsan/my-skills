@@ -17,9 +17,9 @@ const FOLDER = join(ROOT, "changelog");
 const INTRO = "README.md";
 const BUILT = join(ROOT, "CHANGELOG.md");
 /** An entry's file name: `YYYY-MM-DD-short-title.md`. */
-const FILE_NAME = /^(\d{4}-\d{2}-\d{2})-[a-z0-9]+(?:-[a-z0-9]+)*\.md$/;
+const FILE_NAME = /^(?<date>\d{4}-\d{2}-\d{2})-[a-z0-9]+(?:-[a-z0-9]+)*\.md$/;
 /** An entry's first line: `## YYYY-MM-DD — Title`. */
-const ENTRY_HEADING = /^## (\d{4}-\d{2}-\d{2}) — (.+)$/;
+const ENTRY_HEADING = /^## (?<date>\d{4}-\d{2}-\d{2}) — (?<title>.+)$/;
 
 /** Whether a `YYYY-MM-DD` string is a real day: Date rolls "2026-02-30" over to 2 March, so compare the round trip. */
 const isRealDate = (date) => {
@@ -40,14 +40,14 @@ const problemsIn = (name, text) => {
   const [heading, ...rest] = text.split("\n");
   const headingMatch = heading.match(ENTRY_HEADING);
 
-  if (!isRealDate(nameMatch[1])) {
-    found.push(`"${nameMatch[1]}" is not a real date`);
+  if (!isRealDate(nameMatch.groups.date)) {
+    found.push(`"${nameMatch.groups.date}" is not a real date`);
   }
 
   if (!headingMatch) {
     found.push(`the first line isn't "## YYYY-MM-DD — Title": ${heading}`);
-  } else if (headingMatch[1] !== nameMatch[1]) {
-    found.push(`the heading's date, ${headingMatch[1]}, isn't the file name's, ${nameMatch[1]}`);
+  } else if (headingMatch.groups.date !== nameMatch.groups.date) {
+    found.push(`the heading's date, ${headingMatch.groups.date}, isn't the file name's, ${nameMatch.groups.date}`);
   }
 
   if (rest.some((line) => line.startsWith("## "))) {

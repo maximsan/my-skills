@@ -95,7 +95,8 @@ const checkReminderRuns = async ({ layout, env, signal }, present) => {
   }
 
   const errorLines = result.stderr.trim().split("\n");
-  const errorLine = errorLines.find((line) => ERROR_LINE.test(line)) ?? errorLines[0];
+  const [firstLine] = errorLines;
+  const errorLine = errorLines.find((line) => ERROR_LINE.test(line)) ?? firstLine;
   const why = result.timedOut
     ? `it took longer than ${timeout} seconds`
     : result.code === 0

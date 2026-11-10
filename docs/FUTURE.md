@@ -21,10 +21,14 @@ Decided:
 
 ### Next steps, in order
 
-1. **Bring in the Mac's skills and hooks.** They sit outside git today: `check-prose`, `disk-audit`, `pr-description`, `repo-checks`, `review-and-fix` and the hooks. Read each for private details first, because this repo is public. Personal settings files stay out.
-2. **Write the install script and the check.** The script stops with a clear message if Git is older than 2.54 or
+1. **Bring in the Mac's skills and hooks.** They sit outside git today: `check-prose`, `disk-audit`, `pr-description`, `repo-checks`, `review-and-fix` and the hooks. Read each for private details first, because this repo is public. Personal settings files stay out. Bring each script's lint findings to zero with this repo's ESLint config as it moves in: most are layout that
+   `eslint --fix` corrects.
+2. **Merge `my-dotfiles` into this repo, keeping its history**, once [its PR](https://github.com/maximsan/my-dotfiles/pull/1)
+   is merged. Its git hooks then run under `npm run check`. That repo is public, so decide what in its `.gitconfig`
+   stays private before merging that PR. After that PR merges, follow its "After merging" steps.
+3. **Write the install script and the check.** The script stops with a clear message if Git is older than 2.54 or
   `node` is missing. The global git hooks in `my-dotfiles` need both. Run the hook tests from `npm run check`.
-3. **Prove each agent loads the setup.** A fresh session in each agent must show the expected rules and skills. Back up the current files first.
+4. **Prove each agent loads the setup.** A fresh session in each agent must show the expected rules and skills. Back up the current files first.
 
 ### Postponed
 
@@ -41,9 +45,7 @@ Each item waits for the steps above, unless it says otherwise.
 
 **Other repos**
 
-- Merge `devkit` into this repo as a monorepo, keeping its history. Combine its `devclean` command with `disk-audit`, which overlap.
-- Merge `my-dotfiles` the same way, after [its PR](https://github.com/maximsan/my-dotfiles/pull/1) that tracks the shell, git config and hook files. That repo is public, so decide what in its `.gitconfig` stays private before merging that PR.
-- After that PR merges, follow its "After merging" steps. They link `~/.git-hooks` and `~/.zshenv` to `~/.dotfiles`.
+- Merge `devkit` into this repo, keeping its history, after `my-dotfiles`. Combine its `devclean` command with `disk-audit`, which overlap.
 
 **The Mac's global rules**
 

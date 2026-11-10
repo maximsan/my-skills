@@ -33,7 +33,7 @@ const DUBIOUS_OWNERSHIP = /dubious ownership/i;
 const NOT_A_REPOSITORY = /not a git repository/i;
 
 /** A version number such as "2.44" or "2.44.0" in `git --version` output. */
-const VERSION_NUMBER = /\d+\.\d+(\.\d+)?/;
+const VERSION_NUMBER = /(?<version>\d+\.\d+(\.\d+)?)/;
 
 /** A line break in git's output, with or without the Windows carriage return. */
 const LINE_BREAK = /\r?\n/;
@@ -172,9 +172,7 @@ export const createGit = ({ env, signal, onCommand = () => {} }) => {
     try {
       const result = await run(["--version"], cwd);
 
-      const [installedVersion] = result.stdout.match(VERSION_NUMBER) ?? [null];
-
-      return installedVersion;
+      return result.stdout.match(VERSION_NUMBER)?.groups?.version ?? null;
     } catch (error) {
       if (error instanceof StepFailure) {
         return null;

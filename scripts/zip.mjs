@@ -23,7 +23,8 @@ const BYTES_PER_KB = 1024;
 /** Runs git in this repo and returns what it printed. */
 const git = (...args) => execFileSync("git", args, { cwd: ROOT, encoding: "utf8" }).trim();
 
-const ref = process.argv[2] ?? "HEAD";
+const [, , refArgument] = process.argv;
+const ref = refArgument ?? "HEAD";
 const hash = git("rev-parse", "--short", `${ref}^{commit}`);
 const subject = git("log", "-1", "--format=%s", hash);
 const zipPath = join(OUT_FOLDER, `prompts-${hash}.zip`);

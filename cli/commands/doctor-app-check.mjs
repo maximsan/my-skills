@@ -100,9 +100,13 @@ const collectAppResults = async (context, app) => {
  * @returns {{ reason: string } | { points: string[] }} the reason when there's one, the points otherwise
  */
 const asReasonOrPoints = (reasons) => {
+  if (reasons.length !== 1) {
+    return { points: reasons };
+  }
+
   const [onlyReason] = reasons;
 
-  return reasons.length === 1 ? { reason: onlyReason } : { points: reasons };
+  return { reason: onlyReason };
 };
 
 /**

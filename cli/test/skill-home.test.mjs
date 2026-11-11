@@ -65,7 +65,10 @@ describe("skill-home gate", () => {
     mkdirSync(join(root, "other", "outside"), { recursive: true });
     symlinkSync(join(root, "other", "outside"), join(agentSkills, "outside"));
 
-    assert.notEqual(refusalOfWrite(join(agentSkills, "outside", "SKILL.md")), null);
+    const refusal = refusalOfWrite(join(agentSkills, "outside", "SKILL.md")) ?? "";
+
+    assert.match(refusal, /is a link to .*stop and tell the owner/is);
+    assert.doesNotMatch(refusal, /\bmv\b/);
   });
 
   test("the refusal's steps link with ln -sn, so an existing link fails instead of nesting", () => {

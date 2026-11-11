@@ -96,6 +96,16 @@ export const skillWriteRefusal = (filePath, folders, toRealPath) => {
   }
 
   const ownSkill = join(folders.ownSkills, skillName);
+  const skillFolder = join(skillPath.folder, skillName);
+  const realSkillFolder = toRealPath(skillFolder);
+
+  if (linkTargetOf(skillFolder) !== null) {
+    return [
+      `Refused: ${skillFolder} is a link to ${realSkillFolder}, outside the skills repo, ${folders.ownSkills}.`,
+      "Moving a linked skill needs the owner's decision. Stop and tell the owner what you wanted to change.",
+    ].join("\n");
+  }
+
   const [linkFolder, ...otherFolders] = folders.agentSkillFolders;
   const links = [
     `  ln -sn ${ownSkill} ${join(linkFolder, skillName)}`,
@@ -103,11 +113,10 @@ export const skillWriteRefusal = (filePath, folders, toRealPath) => {
   ];
 
   return [
-    `Refused: ${join(skillPath.folder, skillName)} is outside the skills repo, ${folders.ownSkills}.`,
-    "If the skill is the owner's:",
+    `Refused: ${skillFolder} is outside the skills repo, ${folders.ownSkills}.`,
+    `If ${ownSkill} already exists, stop and ask the owner. Otherwise, if the skill is the owner's:`,
     `- A new skill: mkdir ${ownSkill}, write it there, then link it.`,
-    `- A skill folder already here: mv ${join(skillPath.folder, skillName)} ${ownSkill}, then link it.`,
-    `  If ${ownSkill} already exists, stop and ask the owner.`,
+    `- A skill folder already here: mv ${skillFolder} ${ownSkill}, then link it.`,
     "Link it with these. An existing link makes `ln -sn` fail, and that's fine:",
     ...links,
     `If ${folders.packageRecord} lists the skill, it came from a package, and its next update replaces any change.`,

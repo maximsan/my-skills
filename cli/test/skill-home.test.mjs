@@ -31,27 +31,45 @@ describe("skill-home gate", () => {
    * @param {string} path the file about to be written
    * @returns {string | null} the refusal, or null when the write may go ahead
    */
-  const refusalFor = (path) => skillWriteRefusal(path, folders, realPathOf);
+  const refusalOfWrite = (path) => skillWriteRefusal(path, folders, realPathOf);
 
   test("lets through a write into an own skill, through either agent folder", () => {
-    assert.equal(refusalFor(join(agentSkills, "check-prose", "SKILL.md")), null);
-    assert.equal(refusalFor(join(claudeSkills, "check-prose", "SKILL.md")), null);
+    assert.equal(refusalOfWrite(join(agentSkills, "check-prose", "SKILL.md")), null);
+    assert.equal(refusalOfWrite(join(claudeSkills, "check-prose", "SKILL.md")), null);
   });
 
   test("refuses a change to a packaged skill", () => {
-    assert.match(refusalFor(join(agentSkills, "tdd", "SKILL.md")) ?? "", /replaced on its next update/);
+    assert.match(refusalOfWrite(join(agentSkills, "tdd", "SKILL.md")) ?? "", /came from a package/);
   });
 
   test("refuses a new skill created straight in an agent folder, and names where it goes", () => {
-    const refusal = refusalFor(join(agentSkills, "new-skill", "SKILL.md")) ?? "";
+    const refusal = refusalOfWrite(join(agentSkills, "new-skill", "SKILL.md")) ?? "";
 
-    assert.match(refusal, /isn't a link into the skills repo/);
+    assert.match(refusal, /is outside the skills repo/);
     assert.ok(refusal.includes(join(ownSkills, "new-skill")));
   });
 
+  test("refuses a write through a differently cased, linked or relative path", () => {
+    mkdirSync(join(root, "elsewhere"));
+    symlinkSync(join(agentSkills, "tdd"), join(root, "elsewhere", "tdd-link"));
+
+    assert.notEqual(refusalOfWrite(join(root, "home", ".AGENTS", "Skills", "tdd", "SKILL.md")), null);
+    assert.notEqual(refusalOfWrite(join(root, "elsewhere", "tdd-link", "SKILL.md")), null);
+  });
+
+  test("lets through a new skill linked before its repo folder exists", () => {
+    symlinkSync(join(ownSkills, "fresh"), join(agentSkills, "fresh"));
+
+    assert.equal(refusalOfWrite(join(agentSkills, "fresh", "SKILL.md")), null);
+  });
+
+  test("lets through a file at the top of a skills folder, which belongs to no skill", () => {
+    assert.equal(refusalOfWrite(join(agentSkills, "README.md")), null);
+  });
+
   test("lets through writes anywhere else", () => {
-    assert.equal(refusalFor(join(root, "home", "notes.md")), null);
-    assert.equal(refusalFor(join(ownSkills, "check-prose", "SKILL.md")), null);
+    assert.equal(refusalOfWrite(join(root, "home", "notes.md")), null);
+    assert.equal(refusalOfWrite(join(ownSkills, "check-prose", "SKILL.md")), null);
   });
 
   test("the hook refuses with exit code 2 and passes other writes", () => {
@@ -60,16 +78,18 @@ describe("skill-home gate", () => {
     /**
      * Runs the hook on one write, the way Claude Code does.
      * @param {string} filePath the file about to be written
+     * @param {string} [cwd] the folder Claude Code reports, for a relative path
      * @returns {import("node:child_process").SpawnSyncReturns<string>} the finished hook
      */
-    const run = (filePath) =>
+    const run = (filePath, cwd) =>
       spawnSync(process.execPath, [GATE], {
-        input: JSON.stringify({ tool_name: "Write", tool_input: { file_path: filePath } }),
+        input: JSON.stringify({ tool_name: "Write", tool_input: { file_path: filePath }, cwd }),
         env: { ...process.env, HOME: home },
         encoding: "utf8",
       });
 
     assert.equal(run(join(agentSkills, "tdd", "SKILL.md")).status, 2);
+    assert.equal(run(join(".agents", "skills", "tdd", "SKILL.md"), home).status, 2);
     assert.equal(run(join(home, "notes.md")).status, 0);
   });
 

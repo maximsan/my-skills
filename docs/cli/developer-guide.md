@@ -59,7 +59,7 @@ broken.
 | `lib/exec.mjs` | start another program, such as git |
 | `lib/files.mjs` | write, rename or delete a file or folder |
 | `main.mjs`, `run.mjs` | end the process, and react to Ctrl+C |
-| `hooks/*.mjs` | read the hook's input from stdin, and write its answer to stdout, for Claude Code rather than a person |
+| `hooks/*.mjs` | read the hook's input from stdin, and write its answer for Claude Code rather than a person: to stdout, or to stderr with exit code 2 to refuse a tool call |
 
 ### The files
 
@@ -70,6 +70,7 @@ broken.
 | `commands/index.mjs` | The one ordered list of commands. The menu, the command-line reader and `--help` all read it |
 | `commands/setup.mjs` | Once per computer: the shared rules line, the skills link in the projects folder, and the bug-fix reminder in your Claude settings |
 | `hooks/bug-fix-reminder.mjs` | The hook Claude Code runs on each message. Its logic is in `lib/bug-fix-reminder.mjs`; the settings entry `setup` writes is in `lib/claude-settings.mjs` |
+| `hooks/skill-home-gate.mjs` | The hook that refuses a write into `~/.agents/skills` or `~/.claude/skills` outside this repo's `skills/`. Its logic is in `lib/skill-home.mjs`. The Mac's `~/.claude/settings.json` registers it by hand; `setup` doesn't |
 | `commands/add-app.mjs` | Once per app. Its questions are in `add-app-questions.mjs`, its steps in `add-app-steps.mjs` |
 | `commands/doctor.mjs` | Checks everything, changes nothing. It reuses setup's descriptions and add-app's step checks. Its check for one app is in `doctor-app-check.mjs` |
 | `lib/contract.mjs` | **Read this first.** The shapes of `Command`, `Step`, `CheckResult` and `Context`. Types only, no code |

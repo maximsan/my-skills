@@ -55,6 +55,7 @@ Refer to a ticket by what it's about, with its number as a link: "the login retr
 
 ## Keep your skills in the skills repo
 
-- Create a skill that isn't about one project in `~/projects/my/skills/skills/`, then link it into
-  `~/.agents/skills`. A hook refuses a write straight into `~/.agents/skills` or `~/.claude/skills`.
-- A skill installed from a package is replaced on its next update: change it upstream, never in place.
+- Create a skill that serves more than one project in `~/projects/my/skills/skills/`, then link it from
+  `~/.agents/skills` and `~/.claude/skills`. A hook refuses a write straight into those two folders.
+- Leave a skill installed from a package unchanged, because its next update replaces any change. Tell me what should
+  change instead.

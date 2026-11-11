@@ -1,6 +1,6 @@
 // @ts-check
-// The hook that keeps skills in this repo. Claude Code runs it before every file write, as `node <this file>`, with
-// the tool call as JSON on stdin. It refuses a write into a skill folder under ~/.agents/skills or ~/.claude/skills
+// The skill-home gate keeps the owner's skills in this repo. Claude Code runs it before every file write, as
+// `node <this file>`, with the tool call as JSON on stdin. It refuses a write into a skill folder under ~/.agents/skills or ~/.claude/skills
 // that lands outside this repo's skills folder, and lets every other write through. The logic lives in
 // cli/lib/skill-home.mjs.
 //
@@ -23,6 +23,7 @@ try {
   const folders = {
     ownSkills: join(repoRoot, "skills"),
     agentSkillFolders: [join(homedir(), ".agents", "skills"), join(homedir(), ".claude", "skills")],
+    packageRecord: join(homedir(), ".agents", ".skill-lock.json"),
   };
 
   if (typeof writtenPath === "string") {

@@ -56,6 +56,7 @@ Refer to a ticket by what it's about, with its number as a link: "the login retr
 ## Keep your skills in the skills repo
 
 - Create a skill that serves more than one project in `~/projects/my/skills/skills/`, then link it from
-  `~/.agents/skills` and `~/.claude/skills`. A hook refuses a write straight into those two folders.
+  `~/.agents/skills` and `~/.claude/skills`. A Claude Code hook refuses a file write into a skill folder
+  there.
 - Leave a skill installed from a package unchanged, because its next update replaces any change. Tell me what should
   change instead.

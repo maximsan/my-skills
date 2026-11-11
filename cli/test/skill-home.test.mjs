@@ -17,7 +17,11 @@ describe("skill-home gate", () => {
   const ownSkills = join(root, "repo", "skills");
   const agentSkills = join(root, "home", ".agents", "skills");
   const claudeSkills = join(root, "home", ".claude", "skills");
-  const folders = { ownSkills, agentSkillFolders: [agentSkills, claudeSkills] };
+  const folders = {
+    ownSkills,
+    agentSkillFolders: [agentSkills, claudeSkills],
+    packageRecord: join(root, "home", ".agents", ".skill-lock.json"),
+  };
 
   mkdirSync(join(ownSkills, "check-prose"), { recursive: true });
   mkdirSync(join(agentSkills, "tdd"), { recursive: true });
@@ -49,12 +53,26 @@ describe("skill-home gate", () => {
     assert.ok(refusal.includes(join(ownSkills, "new-skill")));
   });
 
-  test("refuses a write through a differently cased, linked or relative path", () => {
+  test("refuses a write through a differently cased or linked path", () => {
     mkdirSync(join(root, "elsewhere"));
     symlinkSync(join(agentSkills, "tdd"), join(root, "elsewhere", "tdd-link"));
 
     assert.notEqual(refusalOfWrite(join(root, "home", ".AGENTS", "Skills", "tdd", "SKILL.md")), null);
     assert.notEqual(refusalOfWrite(join(root, "elsewhere", "tdd-link", "SKILL.md")), null);
+  });
+
+  test("refuses a skill folder that links somewhere outside the repo", () => {
+    mkdirSync(join(root, "other", "outside"), { recursive: true });
+    symlinkSync(join(root, "other", "outside"), join(agentSkills, "outside"));
+
+    assert.notEqual(refusalOfWrite(join(agentSkills, "outside", "SKILL.md")), null);
+  });
+
+  test("the refusal's steps link with ln -sn, so an existing link fails instead of nesting", () => {
+    const refusal = refusalOfWrite(join(agentSkills, "tdd", "SKILL.md")) ?? "";
+
+    assert.ok(refusal.includes(`ln -sn ${join(ownSkills, "tdd")} ${join(agentSkills, "tdd")}`));
+    assert.ok(refusal.includes(`ln -sn ${join(agentSkills, "tdd")} ${join(claudeSkills, "tdd")}`));
   });
 
   test("lets through a new skill linked before its repo folder exists", () => {

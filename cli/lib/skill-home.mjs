@@ -9,7 +9,9 @@ import { basename, dirname, isAbsolute, join, relative, resolve, sep } from "nod
 /**
  * @typedef {object} SkillFolders
  * @property {string} ownSkills this repo's skills folder, where the owner's skills live
- * @property {string[]} agentSkillFolders the folders agents read skills from, such as ~/.agents/skills
+ * @property {string[]} agentSkillFolders the folders agents read skills from: ~/.agents/skills first, where the
+ *   links into this repo go, then folders such as ~/.claude/skills that link to it
+ * @property {string} packageRecord the file listing skills installed from a package, ~/.agents/.skill-lock.json
  */
 
 /** Enough to follow any real chain of links, and to stop on a loop of links that point at each other. */
@@ -72,33 +74,43 @@ export const realPathOf = (path, hopsLeft = MAX_LINK_HOPS) => {
  */
 export const skillWriteRefusal = (filePath, folders, toRealPath) => {
   const realFile = toRealPath(filePath);
-  const realOwnSkills = toRealPath(folders.ownSkills);
 
-  if (isInside(realOwnSkills, realFile)) {
+  if (isInside(toRealPath(folders.ownSkills), realFile)) {
     return null;
   }
 
-  const agentFolder = folders.agentSkillFolders.map(toRealPath).find((folder) => isInside(folder, realFile));
+  // Match the path as written and its real path: a skill folder there may itself link somewhere outside the repo.
+  const skillPath = folders.agentSkillFolders
+    .flatMap((folder) => [{ folder, path: filePath }, { folder: toRealPath(folder), path: realFile }])
+    .find(({ folder, path }) => isInside(folder, path));
 
-  if (agentFolder === undefined) {
+  if (skillPath === undefined) {
     return null;
   }
 
-  const [skillName, ...insideSkill] = relative(agentFolder, realFile).split(sep);
+  const [skillName, ...insideSkill] = relative(skillPath.folder, skillPath.path).split(sep);
 
   // A file at the top of the folder, such as a README, belongs to no skill.
   if (insideSkill.length === 0) {
     return null;
   }
 
+  const ownSkill = join(folders.ownSkills, skillName);
+  const [linkFolder, ...otherFolders] = folders.agentSkillFolders;
+  const links = [
+    `  ln -sn ${ownSkill} ${join(linkFolder, skillName)}`,
+    ...otherFolders.map((folder) => `  ln -sn ${join(linkFolder, skillName)} ${join(folder, skillName)}`),
+  ];
+
   return [
-    `Refused: ${agentFolder}/${skillName} is outside the skills repo, ${folders.ownSkills}.`,
-    "If the skill is yours, move it into the repo and link it back:",
-    `  mv ${agentFolder}/${skillName} ${folders.ownSkills}/${skillName}`,
-    `  ln -s ${folders.ownSkills}/${skillName} ~/.agents/skills/${skillName}`,
-    `  ln -s ~/.agents/skills/${skillName} ~/.claude/skills/${skillName}`,
-    "Skip `mv` for a new skill, and skip a link that already exists.",
-    "If ~/.agents/.skill-lock.json lists the skill, it came from a package, and its next update replaces any change.",
+    `Refused: ${join(skillPath.folder, skillName)} is outside the skills repo, ${folders.ownSkills}.`,
+    "If the skill is the owner's:",
+    `- A new skill: mkdir ${ownSkill}, write it there, then link it.`,
+    `- A skill folder already here: mv ${join(skillPath.folder, skillName)} ${ownSkill}, then link it.`,
+    `  If ${ownSkill} already exists, stop and ask the owner.`,
+    "Link it with these. An existing link makes `ln -sn` fail, and that's fine:",
+    ...links,
+    `If ${folders.packageRecord} lists the skill, it came from a package, and its next update replaces any change.`,
     "Then stop and tell the owner what you wanted to change.",
   ].join("\n");
 };

@@ -52,3 +52,9 @@ Refer to a ticket by what it's about, with its number as a link: "the login retr
 - Stage only your own files, by name, and mention any others you left. Never `git add -A`.
 - Name branches `<type>/<name-with-dashes>`, such as `fix/login-retry`.
 - Write PR bodies with the `pr-description` skill.
+
+## Keep your skills in the skills repo
+
+- Create a skill that isn't about one project in `~/projects/my/skills/skills/`, then link it into
+  `~/.agents/skills`. A hook refuses a write straight into `~/.agents/skills` or `~/.claude/skills`.
+- A skill installed from a package is replaced on its next update: change it upstream, never in place.

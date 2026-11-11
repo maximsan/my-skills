@@ -12,7 +12,8 @@ import { execFileSync, spawnSync } from "node:child_process";
 import { lstatSync, readdirSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
+
+import { runsAsScript } from "./runs-as-script.mjs";
 
 const HOME = homedir();
 const DATA_VOLUME = "/System/Volumes/Data";
@@ -28,11 +29,11 @@ const SHOWN_FILES = 12;
 const BIG_FILE_BYTES = GIBIBYTE;
 const GROUP_DEPTH = 3;
 
-/** Wide enough for `1234.5`, so the sizes line up. */
+/** Column width for a size such as `1234.5` GiB, so sizes line up. */
 const SIZE_WIDTH = 6;
 
 /** Room for `du`'s listing of a whole home folder; Node's default of one megabyte cuts it short. */
-const DU_OUTPUT_BYTES = 1 << 28;
+const OUTPUT_BYTES = 1 << 28;
 
 const WHITESPACE_RUN = /\s+/;
 
@@ -86,11 +87,18 @@ export function windowsHolding(newestDateMs, nowMs, windows) {
  * @returns {[string, number][]} each folder with its size in bytes
  */
 export function parseDu(duOutput) {
-  return duOutput.split("\n").filter(Boolean).map((line) => {
-    const separator = line.indexOf("\t");
+  return duOutput.split("\n").filter(Boolean).map(folderAndBytes).sort(largestFirst);
+}
 
-    return [line.slice(separator + 1), Number(line.slice(0, separator)) * KIBIBYTE];
-  }).sort(largestFirst);
+/**
+ * One line of `du -k` output as [folder, bytes].
+ * @param {string} line a size in kibibytes, a tab and a folder
+ * @returns {[string, number]} the folder with its size in bytes
+ */
+function folderAndBytes(line) {
+  const separator = line.indexOf("\t");
+
+  return [line.slice(separator + 1), Number(line.slice(0, separator)) * KIBIBYTE];
 }
 
 /**
@@ -119,7 +127,7 @@ const gibibytes = (bytes) => `${(bytes / GIBIBYTE).toFixed(1)}`.padStart(SIZE_WI
 function folderSizes(duArgs) {
   const { stdout } = spawnSync("du", ["-xk", ...duArgs], {
     encoding: "utf8",
-    maxBuffer: DU_OUTPUT_BYTES,
+    maxBuffer: OUTPUT_BYTES,
     stdio: ["ignore", "pipe", "ignore"],
   });
 
@@ -128,7 +136,7 @@ function folderSizes(duArgs) {
 
 /**
  * Prints the title of the next part of the report.
- * @param {string} title what the part is about
+ * @param {string} title the part's subject, such as `Largest folders`
  */
 function heading(title) {
   console.log(`\n== ${title}`);
@@ -195,7 +203,7 @@ function reportProtectedFolders() {
     try {
       readdirSync(join(HOME, folder));
     } catch (error) {
-      if (error.code === "EPERM") {
+      if (error instanceof Error && "code" in error && error.code === "EPERM") {
         console.log(`~/${folder}`);
       }
     }
@@ -203,14 +211,16 @@ function reportProtectedFolders() {
 }
 
 function reportActivity() {
+  /** @type {Map<number, Map<string, number>>} window in days to the bytes each group gained in it */
   const totals = new Map(WINDOWS_IN_DAYS.map((days) => [days, new Map()]));
   const seen = new Set();
+
+  /** @type {[string, number][]} */
   const bigFiles = [];
   const now = Date.now();
   const pending = [...ACTIVITY_ROOTS];
 
-  while (pending.length > 0) {
-    const folder = pending.pop();
+  for (let folder = pending.pop(); folder !== undefined; folder = pending.pop()) {
     let entries;
 
     try {
@@ -242,10 +252,12 @@ function reportActivity() {
           const bytes = stat.blocks * STAT_BLOCK_BYTES;
           const holding = windowsHolding(Math.max(stat.mtimeMs, stat.birthtimeMs), now, WINDOWS_IN_DAYS);
 
-          for (const days of holding) {
-            const group = groupOf(path, HOME);
+          for (const [days, groups] of totals) {
+            if (holding.includes(days)) {
+              const group = groupOf(path, HOME);
 
-            totals.get(days).set(group, (totals.get(days).get(group) ?? 0) + bytes);
+              groups.set(group, (groups.get(group) ?? 0) + bytes);
+            }
           }
 
           if (bytes >= BIG_FILE_BYTES) {
@@ -256,12 +268,12 @@ function reportActivity() {
     }
   }
 
-  for (const days of WINDOWS_IN_DAYS) {
-    const groups = [...totals.get(days)].sort(largestFirst);
-    const total = groups.reduce((sum, [, bytes]) => sum + bytes, 0);
+  for (const [days, groups] of totals) {
+    const largest = [...groups].sort(largestFirst);
+    const total = largest.reduce((sum, [, bytes]) => sum + bytes, 0);
 
     heading(`Created or changed in ${days} days: ${gibibytes(total).trim()} GiB`);
-    printSizes(groups.slice(0, SHOWN_GROUPS));
+    printSizes(largest.slice(0, SHOWN_GROUPS));
   }
 
   heading("Files of a gibibyte or more");
@@ -286,8 +298,6 @@ function main() {
   reportSimulators();
 }
 
-const [, startedScript] = process.argv;
-
-if (startedScript === fileURLToPath(import.meta.url)) {
+if (runsAsScript(import.meta.url)) {
   main();
 }

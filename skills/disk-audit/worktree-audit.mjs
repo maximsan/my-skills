@@ -13,7 +13,8 @@ import { execFileSync } from "node:child_process";
 import { existsSync, readdirSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+
+import { runsAsScript } from "./runs-as-script.mjs";
 
 const HOME = homedir();
 const CODEX_WORKTREES = join(HOME, ".codex", "worktrees");
@@ -24,12 +25,12 @@ const DEEPEST_REPO = 3;
 const DEFAULT_BRANCHES = ["origin/HEAD", "origin/main", "origin/master"];
 const RECENT_DAYS = 7;
 const DAY_IN_MS = 86_400_000;
-const KILOBYTES_PER_GIGABYTE = 1024 * 1024;
+const KIBIBYTES_PER_GIBIBYTE = 1024 * 1024;
 
 /** Room for a whole `git` or `lsof` listing; Node's default of one megabyte cuts it short. */
 const OUTPUT_BYTES = 1 << 28;
 
-/** An ISO timestamp cut to this length is its date alone. */
+/** The first 10 characters of an ISO timestamp are its date, e.g. `2026-11-05`. */
 const ISO_DATE_LENGTH = "YYYY-MM-DD".length;
 
 /** From most to least reason to keep the folder. */
@@ -70,8 +71,12 @@ export function parseWorktrees(porcelain) {
  * A worktree that has just started sits on a commit already in the default
  * branch, so it looks merged. Recent activity therefore outranks merged.
  * @param {{inUse: boolean, changes: number, merged: boolean, onGitHub: boolean, recent: boolean}} facts what is
- *   known about the worktree: a process works in it, its count of changed files, whether its commit is merged or
- *   a branch tip on GitHub, and whether it was active lately
+ *   known about the worktree:
+ *   - `inUse`: a running process works in it
+ *   - `changes`: its count of changed files
+ *   - `merged`: its commit is in the default branch or in a merged pull request
+ *   - `onGitHub`: its commit is a branch tip on GitHub
+ *   - `recent`: it was active in the last `RECENT_DAYS` days
  * @returns {string} one of the `STATUS` values
  */
 export function statusOf({ inUse, changes, merged, onGitHub, recent }) {
@@ -185,18 +190,25 @@ function openCodexConversations() {
   const rows = output("sqlite3", ["-separator", "\t", `file:${CODEX_STATE}?immutable=1`,
     "select cwd, date(max(updated_at), 'unixepoch', 'localtime') from threads where archived = 0 group by cwd;"]);
 
-  return new Map((rows ?? "").split("\n").filter(Boolean).map((row) => row.split("\t")));
+  /** @type {[string, string][]} */
+  const folderDates = (rows ?? "").split("\n").filter(Boolean).map((row) => {
+    const [folder, date] = row.split("\t");
+
+    return [folder, date];
+  });
+
+  return new Map(folderDates);
 }
 
 /**
  * How much disk the folder takes.
  * @param {string} folder the folder to measure
- * @returns {string} the size in gigabytes with one decimal; `0.0` when `du` fails
+ * @returns {string} the size in gibibytes with one decimal; `0.0` when `du` fails
  */
-function sizeInGigabytes(folder) {
-  const [kilobytes] = (output("du", ["-sk", folder]) ?? "0").split("\t");
+function sizeInGibibytes(folder) {
+  const [kibibytes] = (output("du", ["-sk", folder]) ?? "0").split("\t");
 
-  return (Number(kilobytes) / KILOBYTES_PER_GIGABYTE).toFixed(1);
+  return (Number(kibibytes) / KIBIBYTES_PER_GIBIBYTE).toFixed(1);
 }
 
 /**
@@ -226,7 +238,7 @@ function isMerged(folder, commit) {
  * @param {Set<string>} workingFolders the current folder of each running process
  * @param {Map<string, string>} conversations folder to the date its newest open Codex conversation changed
  * @returns {{status: string, size: string, touched: string, conversation: string, branch: string, folder: string}}
- *   one report row: the status, size in gigabytes, the dates, the branch and the folder with the home folder as `~`
+ *   one report row: the status, size in gibibytes, the dates, the branch and the folder with the home folder as `~`
  */
 function audited({ folder, branch }, tipsOnGitHub, workingFolders, conversations) {
   const commit = output("git", ["-C", folder, "rev-parse", "HEAD"]);
@@ -237,13 +249,13 @@ function audited({ folder, branch }, tipsOnGitHub, workingFolders, conversations
     inUse: isInUse(folder, workingFolders),
     changes,
     merged: commit !== null && isMerged(folder, commit),
-    onGitHub: tipsOnGitHub.has(commit),
+    onGitHub: commit !== null && tipsOnGitHub.has(commit),
     recent: [touched, conversation].some((date) => date !== "-" && isRecent(date, Date.now())),
   });
 
   return {
     status,
-    size: sizeInGigabytes(folder),
+    size: sizeInGibibytes(folder),
     touched,
     conversation,
     branch: branch ?? "detached",
@@ -296,8 +308,8 @@ function main(givenRoots) {
   }
 }
 
-const [, startedScript, ...givenRoots] = process.argv;
+const [, , ...givenRoots] = process.argv;
 
-if (startedScript === fileURLToPath(import.meta.url)) {
+if (runsAsScript(import.meta.url)) {
   main(givenRoots);
 }

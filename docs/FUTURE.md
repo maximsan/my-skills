@@ -21,7 +21,7 @@ Decided:
 
 ### Next steps, in order
 
-1. **Bring in the Mac's hooks.** They sit outside git today, in `~/.claude/hooks`. Read each for private details
+1. **Bring in the Mac's hooks.** They sit outside git today, in `~/.claude/hooks`. Read each hook for private details
    first, because this repo is public. Bring each script's lint findings to zero with this repo's ESLint config as it
    moves in.
 2. **Merge `my-dotfiles` into this repo, keeping its history.** That repo is public, so before

@@ -1,9 +1,10 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { execFileSync, spawnSync } from "node:child_process";
+import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
 import { after, before, describe, test } from "node:test";
+import { fileURLToPath } from "node:url";
 
 import { changeTo, generatedSources, staleFiles } from "./check-generated.mjs";
 
@@ -80,5 +81,36 @@ describe("generatedSources", () => {
     for (const digest of sources.values()) {
       assert.match(digest, /^[0-9a-f]{64}$/);
     }
+  });
+});
+
+describe("run through a symlink", () => {
+  test("prints the same usage message and exit code as a direct run", (context) => {
+    const scriptsFolder = dirname(fileURLToPath(import.meta.url));
+    const temp = mkdtempSync(join(tmpdir(), "check-generated-"));
+    const linkedFolder = join(temp, "scripts");
+
+    context.after(() => rmSync(temp, { recursive: true, force: true }));
+    symlinkSync(scriptsFolder, linkedFolder, "dir");
+
+    // With no arguments the script prints its usage and fails: output that does not depend on a checkout.
+    /**
+     * Runs the script from `folder` with no arguments.
+     * @param {string} folder the scripts folder, real or linked
+     * @returns {{ status: number | null, stderr: string }} its exit code and what it printed as an error
+     */
+    const run = (folder) => {
+      const { status, stderr } = spawnSync(process.execPath, [join(folder, "check-generated.mjs")], {
+        cwd: temp,
+        encoding: "utf8",
+      });
+
+      return { status, stderr };
+    };
+
+    const linked = run(linkedFolder);
+
+    assert.match(linked.stderr, /^Usage: /);
+    assert.deepEqual(linked, run(scriptsFolder));
   });
 });

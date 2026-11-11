@@ -7,7 +7,7 @@
  * a phrase that asks the reader to recall, an acronym never expanded, and a
  * count of things, which goes stale. What it cannot test is NOT_CHECKED below.
  */
-import { readFileSync } from "node:fs";
+import { readFileSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 export const WORD_LIMIT = 25;
@@ -63,7 +63,7 @@ const COUNT_OF_PARTS = new RegExp(
 /** "Tailwind 4 pages": a digit after a product name is its version, not a count. */
 const VERSION_BEFORE = /\b[A-Z][\w.]*\s+$/;
 
-/** A count that starts with a digit may be a version instead. */
+/** Matches a number that starts with a digit. Such a number may be a version, not a count. */
 const STARTS_WITH_DIGIT = /^\d/;
 
 const LIST_ITEM = /^\s*(?:[-*+]|\d+\.)\s+(?<item>.*)/;
@@ -111,7 +111,10 @@ function inProductName(prose, start, end) {
  * @returns {string[]} each paragraph or list item, its lines joined into one
  */
 export function blocks(text) {
+  /** @type {string[]} */
   const found = [];
+
+  /** @type {string[]} */
   let paragraph = [];
   let fenced = false;
 
@@ -134,7 +137,7 @@ export function blocks(text) {
 
     const listItem = line.match(LIST_ITEM);
 
-    if (listItem) {
+    if (listItem?.groups) {
       endParagraph();
       found.push(listItem.groups.item);
     } else if (!line.trim()) {
@@ -176,6 +179,7 @@ function withoutCode(text) {
  * @returns {[string, string][]} each finding: the reason, then the sentence or word it is about
  */
 export function findings(text) {
+  /** @type {[string, string][]} */
   const found = [];
 
   for (const sentence of sentences(text)) {
@@ -205,18 +209,18 @@ export function findings(text) {
 
   for (const match of prose.matchAll(BACK_REFERENCE)) {
     const [reference] = match;
-    const { noun } = match.groups;
+    const noun = match.groups?.noun;
 
-    if (!prose.slice(0, match.index).toLowerCase().includes(noun)) {
+    if (noun && !prose.slice(0, match.index).toLowerCase().includes(noun)) {
       found.push([`"that ${noun}" never named before it`, reference]);
     }
   }
 
   for (const match of prose.matchAll(ACRONYM)) {
-    const { word } = match.groups;
-    const named = inProductName(prose, match.index, match.index + word.length);
+    const word = match.groups?.word;
 
-    if (!ACRONYM_ALLOWED.has(word) && !named && word.length <= LONGEST_ACRONYM && !text.includes(`(${word})`)) {
+    if (word && !ACRONYM_ALLOWED.has(word) && !inProductName(prose, match.index, match.index + word.length)
+      && word.length <= LONGEST_ACRONYM && !text.includes(`(${word})`)) {
       found.push([`acronym ${word} never expanded`, word]);
     }
   }
@@ -280,6 +284,7 @@ function main(paths) {
 
 const [, startedScript, ...givenPaths] = process.argv;
 
-if (startedScript === fileURLToPath(import.meta.url)) {
+// `import.meta.url` names the real file, so a script started through a symlink compares by its real path.
+if (startedScript !== undefined && realpathSync(startedScript) === fileURLToPath(import.meta.url)) {
   main(givenPaths);
 }

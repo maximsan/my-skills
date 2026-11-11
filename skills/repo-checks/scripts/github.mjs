@@ -117,7 +117,7 @@ export function namesTicket(text, number) {
 /**
  * One field from each object in a list `gh` printed, such as each assignee's login.
  * @param {unknown} listed the list of objects
- * @param {string} field the field to take from each
+ * @param {string} field the name of the field to read, such as `login`
  * @returns {string[]} the field's value from each object, in order
  */
 function fieldOfEach(listed, field) {

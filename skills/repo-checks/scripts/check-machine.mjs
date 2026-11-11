@@ -46,7 +46,7 @@ export function readMachine({ volume = process.cwd(), floorGb = DEFAULT_FLOOR_GB
 
 /**
  * Whether free disk is under the floor, so a run should not start.
- * @param {Machine} machine what the machine has
+ * @param {Machine} machine free disk, the disk floor, load and cores
  * @returns {boolean} true when free disk is under the floor
  */
 export function diskIsShort(machine) {
@@ -56,7 +56,7 @@ export function diskIsShort(machine) {
 /**
  * More processes wanting to run than cores: a test can then run out of time
  * while other work holds the processor.
- * @param {Machine} machine what the machine has
+ * @param {Machine} machine free disk, the disk floor, load and cores
  * @returns {boolean} true when the load average is above the core count
  */
 export function isOverloaded(machine) {
@@ -65,7 +65,7 @@ export function isOverloaded(machine) {
 
 /**
  * Why a failed test in this run may not be a defect.
- * @param {Machine} machine what the machine has
+ * @param {Machine} machine free disk, the disk floor, load and cores
  * @returns {string} the warning, naming the load and the core count
  */
 export function loadWarning(machine) {
@@ -78,7 +78,7 @@ export function loadWarning(machine) {
 
 /**
  * One line: ✗ under the disk floor, ! with more load than cores, else ✓.
- * @param {Machine} machine what the machine has
+ * @param {Machine} machine free disk, the disk floor, load and cores
  * @returns {string} the line to print
  */
 export function report(machine) {

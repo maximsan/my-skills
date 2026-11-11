@@ -1,5 +1,10 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import { mkdirSync, mkdtempSync, rmSync, symlinkSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
 import { describe, test } from "node:test";
+import { fileURLToPath } from "node:url";
 
 import { isInUse, isRecent, parseWorktrees, STATUS, statusOf } from "./worktree-audit.mjs";
 
@@ -30,7 +35,7 @@ describe("parseWorktrees", () => {
 
 describe("statusOf", () => {
   test("a running process outranks everything", () => {
-    assert.equal(statusOf({ inUse: true, changes: 3, merged: true, onGitHub: true }), STATUS.inUse);
+    assert.equal(statusOf({ inUse: true, changes: 3, merged: true, onGitHub: true, recent: true }), STATUS.inUse);
   });
 
   test("uncommitted changes outrank a merged commit", () => {
@@ -76,5 +81,33 @@ describe("isInUse", () => {
 
   test("ignores a folder that only shares a prefix", () => {
     assert.ok(!isInUse("/wt/one", new Set(["/wt/one-more"])));
+  });
+});
+
+describe("run through a symlink", () => {
+  test("prints the same report as a direct run", (context) => {
+    const skillFolder = dirname(fileURLToPath(import.meta.url));
+    const temp = mkdtempSync(join(tmpdir(), "worktree-audit-"));
+    const linkedFolder = join(temp, "disk-audit");
+    const noRepos = join(temp, "projects");
+
+    context.after(() => rmSync(temp, { recursive: true, force: true }));
+    symlinkSync(skillFolder, linkedFolder, "dir");
+    mkdirSync(noRepos);
+
+    // An empty home folder keeps the audit off this machine's real worktrees and Codex state.
+    /**
+     * Runs the script from `folder` on the empty projects folder.
+     * @param {string} folder the skill's folder, real or linked
+     * @returns {import("node:child_process").SpawnSyncReturns<string>} what the run printed
+     */
+    const run = (folder) => spawnSync(process.execPath, [join(folder, "worktree-audit.mjs"), noRepos], {
+      encoding: "utf8",
+      env: { ...process.env, HOME: temp },
+    });
+    const linked = run(linkedFolder);
+
+    assert.match(linked.stdout, /^STATUS\t/);
+    assert.equal(linked.stdout, run(skillFolder).stdout);
   });
 });

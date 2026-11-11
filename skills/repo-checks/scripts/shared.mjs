@@ -3,7 +3,7 @@
  * script run from an import.
  */
 import { execFileSync } from "node:child_process";
-import { resolve } from "node:path";
+import { realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 /**
@@ -31,14 +31,15 @@ const WHOLE_TRACKER_BYTES = 256 * 1024 * 1024;
 
 /**
  * Whether the module at `importMetaUrl` is the script Node was started
- * with, rather than an import of a test.
+ * with, rather than an import of a test. `import.meta.url` names the real
+ * file, so a script started through a symlink compares by its real path.
  * @param {string} importMetaUrl the calling module's `import.meta.url`
  * @returns {boolean} true when Node was started with that module
  */
 export function runsAsScript(importMetaUrl) {
   const [, started] = process.argv;
 
-  return started !== undefined && fileURLToPath(importMetaUrl) === resolve(started);
+  return started !== undefined && fileURLToPath(importMetaUrl) === realpathSync(started);
 }
 
 /**

@@ -1,5 +1,10 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
+import { mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join } from "node:path";
 import { describe, test } from "node:test";
+import { fileURLToPath } from "node:url";
 
 import { blocks, findings } from "./check-prose.mjs";
 
@@ -122,5 +127,30 @@ describe("blocks", () => {
       "first item wrapped",
       "second item",
     ]);
+  });
+});
+
+describe("run through a symlink", () => {
+  test("prints the same findings as a direct run", (context) => {
+    const skillFolder = dirname(fileURLToPath(import.meta.url));
+    const temp = mkdtempSync(join(tmpdir(), "check-prose-"));
+    const linkedFolder = join(temp, "check-prose");
+    const markdown = join(temp, "aside.md");
+
+    context.after(() => rmSync(temp, { recursive: true, force: true }));
+    symlinkSync(skillFolder, linkedFolder, "dir");
+    writeFileSync(markdown, "The fix — a small one — ships today.\n");
+
+    /**
+     * Runs the script from `folder` on the Markdown file.
+     * @param {string} folder the skill's folder, real or linked
+     * @returns {import("node:child_process").SpawnSyncReturns<string>} what the run printed
+     */
+    const run = (folder) =>
+      spawnSync(process.execPath, [join(folder, "check-prose.mjs"), markdown], { encoding: "utf8" });
+    const linked = run(linkedFolder);
+
+    assert.match(linked.stdout, /aside\.md: 1\n/);
+    assert.equal(linked.stdout, run(skillFolder).stdout);
   });
 });

@@ -26,7 +26,9 @@ Decided:
 2. **Merge `my-dotfiles` into this repo, keeping its history.** That repo is public, so before
    [its open PR](https://github.com/maximsan/my-dotfiles/pull/1) merges, decide what in its `.gitconfig` stays
    private. After it merges, follow its "After merging" steps. Then merge the repo in.
-3. **Write the install script and the check.** The script stops with a clear message if Git is older than 2.54 or
+3. **Write the install script and the check.** The check lists every skill in `~/.agents/skills` that has no record. A
+   skill has a record when it links into this repo, or when `~/.agents/.skill-lock.json`, the record of packaged
+   skills, lists it. The script stops with a clear message if Git is older than 2.54 or
   `node` is missing. The global git hooks need both. Run the hook tests from `npm run check`.
 4. **Prove each agent loads the setup.** A fresh session in each agent must show the expected rules and skills. Back up the current files first.
 

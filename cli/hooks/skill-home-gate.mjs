@@ -1,8 +1,8 @@
 // @ts-check
 // The skill-home gate keeps the owner's skills in this repo. Claude Code runs it before every file write, as
-// `node <this file>`, with the tool call as JSON on stdin. It refuses a write into a skill folder under ~/.agents/skills or ~/.claude/skills
-// that lands outside this repo's skills folder, and lets every other write through. The logic lives in
-// cli/lib/skill-home.mjs.
+// `node <this file>`, with the tool call as JSON on stdin. It refuses a write into a skill folder under
+// ~/.agents/skills or ~/.claude/skills that lands outside this repo's skills folder, and lets every other write
+// through. The logic lives in cli/lib/skill-home.mjs.
 //
 // Claude Code refuses a write only on exit code 2. Any other failure, even one before this file's own code runs,
 // lets the write through.

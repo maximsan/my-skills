@@ -252,8 +252,10 @@ function reportActivity() {
           const bytes = stat.blocks * STAT_BLOCK_BYTES;
           const holding = windowsHolding(Math.max(stat.mtimeMs, stat.birthtimeMs), now, WINDOWS_IN_DAYS);
 
-          for (const [days, groups] of totals) {
-            if (holding.includes(days)) {
+          for (const days of holding) {
+            const groups = totals.get(days);
+
+            if (groups) {
               const group = groupOf(path, HOME);
 
               groups.set(group, (groups.get(group) ?? 0) + bytes);

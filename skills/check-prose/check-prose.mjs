@@ -63,7 +63,9 @@ const COUNT_OF_PARTS = new RegExp(
 /** "Tailwind 4 pages": a digit after a product name is its version, not a count. */
 const VERSION_BEFORE = /\b[A-Z][\w.]*\s+$/;
 
-/** Matches a number that starts with a digit. Such a number may be a version, not a count. */
+/**
+ * Matches a count written in digits, such as `4`, which may be a version. A count in words, such as `four`, never is.
+ */
 const STARTS_WITH_DIGIT = /^\d/;
 
 const LIST_ITEM = /^\s*(?:[-*+]|\d+\.)\s+(?<item>.*)/;
@@ -282,9 +284,26 @@ function main(paths) {
   console.log(NOT_CHECKED);
 }
 
-const [, startedScript, ...givenPaths] = process.argv;
+/**
+ * Whether the module at `importMetaUrl` is the script Node was started with,
+ * rather than an import. Both paths are compared with links followed, so a
+ * script started through a symlink counts.
+ * @param {string} importMetaUrl the calling module's `import.meta.url`
+ * @returns {boolean} true when Node was started with that module
+ */
+export function runsAsScript(importMetaUrl) {
+  const [, started] = process.argv;
 
-// `import.meta.url` names the real file, so a script started through a symlink compares by its real path.
-if (startedScript !== undefined && realpathSync(startedScript) === fileURLToPath(import.meta.url)) {
+  try {
+    return started !== undefined && realpathSync(started) === realpathSync(fileURLToPath(importMetaUrl));
+  } catch {
+    // A start path that isn't a file means this module was imported.
+    return false;
+  }
+}
+
+const [, , ...givenPaths] = process.argv;
+
+if (runsAsScript(import.meta.url)) {
   main(givenPaths);
 }

@@ -12,7 +12,7 @@ node ~/.agents/skills/check-prose/check-prose.mjs <file> [<file> ...]
 ```
 
 A body going to `gh issue edit` or `gh pr edit` is already a file for `--body-file`: check that file. Fix every
-finding, then run it again. Publish when it reports none.
+finding, then run it again. Publish when it reports none, apart from counts in a PR or issue body.
 
 It flags:
 

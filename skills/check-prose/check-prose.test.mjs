@@ -71,37 +71,9 @@ describe("a back-reference", () => {
   });
 });
 
-describe("a product name or unit", () => {
-  test("passes an acronym beside a capitalized word", () => {
-    for (const text of ["Close VS Code first.", "Removes the Neural DSP installers."]) {
-      assert.deepEqual(reasons(text), [], text);
-    }
-  });
-
-  test("passes a size unit", () => {
-    assert.deepEqual(reasons("It frees 12 GB of space."), []);
-  });
-
-  test("still flags an acronym after the opening word of a sentence", () => {
-    assert.deepEqual(reasons("Ship SPM today."), ["acronym SPM never expanded"]);
-  });
-});
-
-describe("an acronym", () => {
-  test("flags one never expanded, and passes one expanded or well known", () => {
-    assert.deepEqual(reasons("Ship the SPM build."), ["acronym SPM never expanded"]);
-    assert.deepEqual(reasons("Swift Package Manager (SPM) builds it. The PR adds it."), []);
-  });
-
-  test("reads \"CO₂\" as one word", () => {
-    assert.deepEqual(reasons("Roasting gives off CO₂."), []);
-  });
-});
-
 describe("sentence shape", () => {
-  test("flags an aside between dashes and a request to recall", () => {
+  test("flags an aside between dashes", () => {
     assert.deepEqual(reasons("The value — the old one — stays."), ["aside between dashes"]);
-    assert.deepEqual(reasons("Run it as we did before."), ["asks the reader to recall"]);
   });
 
   test("flags a ticket named by its number alone", () => {
@@ -115,8 +87,8 @@ describe("sentence shape", () => {
     assert.deepEqual(reasons("# a — b — c\n\n| a — b — c |\n\n```\na — b — c\n```"), []);
   });
 
-  test("reads no acronym in inline code", () => {
-    assert.deepEqual(reasons("Run `SPM` first."), []);
+  test("reads no aside in inline code", () => {
+    assert.deepEqual(reasons("Run `a — b — c` first."), []);
   });
 });
 

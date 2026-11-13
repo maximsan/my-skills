@@ -2,36 +2,14 @@
 /**
  * Checks prose against the writing rules a script can actually test.
  *
- * Reports, per file: an aside between dashes, a sentence over the word limit, a
- * back-reference to something never named, a link whose text is only a number,
- * a phrase that asks the reader to recall, an acronym never expanded, and a
- * count of things, which goes stale. What it cannot test is NOT_CHECKED below.
+ * Reports, per file: an aside between dashes, a "that X" before X is named, a
+ * ticket named by its number alone, and a count of parts of the code or the
+ * work, which goes stale in a doc. Every other writing rule needs a reader.
  */
 import { readFileSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-export const WORD_LIMIT = 25;
 export const COUNT_FINDING = "a count, which goes stale";
-
-const RECALL
-  = /\b(?:as (?:we did |mentioned |noted |above|before)|like we did|recall that|as discussed|you.ll remember)/i;
-
-/** An acronym a reader is expected to know without being told. */
-const ACRONYM_ALLOWED = new Set([
-  "API", "ARB", "CI", "CLI", "CSS", "HTML", "ICU", "ID", "JSON", "OS", "PDF", "PNG",
-  "PR", "SDK", "UI", "URL", "UTC", "ADR", "FAQ", "AM", "PM", "TDS", "IOS",
-  "DNS", "AI", "HTTPS", "JS", "KB", "EU", "MB", "GB", "TB",
-]);
-
-/** Bounded by any letter or digit, so the "CO" of "CO₂" is no acronym. */
-const ACRONYM = /(?<![\p{L}\p{N}_])(?<word>[A-Z]{2,})(?![\p{L}\p{N}_])/gu;
-const LONGEST_ACRONYM = 5;
-
-/** "VS Code" and "the Neural DSP plugin": a capitalized neighbour makes it a product name. */
-const CAPITALIZED_AFTER = /^\s+[A-Z][a-z]/;
-
-/** The word before must not open a sentence, where every word is capitalized. */
-const CAPITALIZED_BEFORE = /[\p{Ll},;:]\s+[A-Z][a-z]+\s+$/u;
 
 /**
  * Nouns that "that" points back at, as in "that name". Kept short: "that short"
@@ -93,17 +71,6 @@ function countsParts(plain) {
 
     return !isVersion;
   });
-}
-
-/**
- * Whether the acronym at `start` to `end` of `prose` is part of a product name.
- * @param {string} prose the text the acronym was found in
- * @param {number} start where the acronym starts in `prose`
- * @param {number} end where the acronym ends in `prose`
- * @returns {boolean} true when a capitalized word next to the acronym makes it a product name
- */
-function inProductName(prose, start, end) {
-  return CAPITALIZED_AFTER.test(prose.slice(end)) || CAPITALIZED_BEFORE.test(prose.slice(0, start));
 }
 
 /**
@@ -191,16 +158,6 @@ export function findings(text) {
       found.push(["aside between dashes", sentence]);
     }
 
-    const words = plain.split(WHITESPACE_RUN).filter(Boolean).length;
-
-    if (words > WORD_LIMIT) {
-      found.push([`${words} words, over ${WORD_LIMIT}`, sentence]);
-    }
-
-    if (RECALL.test(plain)) {
-      found.push(["asks the reader to recall", sentence]);
-    }
-
     if (countsParts(plain)) {
       found.push([COUNT_FINDING, sentence]);
     }
@@ -218,15 +175,6 @@ export function findings(text) {
     }
   }
 
-  for (const match of prose.matchAll(ACRONYM)) {
-    const word = match.groups?.word;
-
-    if (word && !ACRONYM_ALLOWED.has(word) && !inProductName(prose, match.index, match.index + word.length)
-      && word.length <= LONGEST_ACRONYM && !text.includes(`(${word})`)) {
-      found.push([`acronym ${word} never expanded`, word]);
-    }
-  }
-
   for (const sentence of sentences(text)) {
     if (TICKET_LINK_ONLY.test(sentence)) {
       found.push(["a ticket named by its number alone", sentence]);
@@ -237,19 +185,7 @@ export function findings(text) {
 }
 
 const NOT_CHECKED = `
-Still to check by reading (the skill's SKILL.md shows a bad and a good example
-of each):
-  - the four questions: result first, clear to a newcomer, every term
-    explained, nothing removable
-  - whether a sentence holds one fact or three (word count is only a proxy)
-  - whether a claim about the code is true
-  - an aside in parentheses: source pointers like "(source: GLOSSARY.md)" are
-    parentheses too, so a check would flag every one of them
-  - a chain of negatives, where the true thing should come first
-  - an old-versus-new comparison that should be an "Old: / New:" list
-  - a project term used without its definition on first use
-  - a word with two meanings, such as "reset" or "cleared": domain terms in
-    some repos, so a check would fire on every use
+Every other writing rule needs a reader: see the Writing section of ~/.claude/CLAUDE.md.
 `;
 
 const SHOWN_CHARACTERS = 100;

@@ -1,6 +1,6 @@
 ---
 name: why-this-exists
-description: This skill should be used when the user asks "can I remove this", when code is about to be deleted or replaced, when a comment is about to change, or when a reviewed diff does either. Finds out why the code or comment exists first: Chesterton's fence.
+description: This skill should be used when the user asks "can I remove this", when code is about to be deleted or replaced, when a comment is about to change, or when a reviewed diff does either. Finds out first why the code or comment exists, the idea behind Chesterton's fence.
 ---
 
 # Why does this code exist?

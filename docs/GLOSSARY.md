@@ -18,6 +18,11 @@ Jump to:
 
 **owner** — the person these rules serve.
 
+**shared set** — the instructions, skills, hooks and tooling, which are reused by every project.
+
+**w365 workflow** — the ticket-folder way of working on the Windows work machine (investigate, plan, implement,
+review, learn). It is not used on the Macs yet.
+
 **agent** — an AI coding tool that loads these rules, such as Claude Code, Codex, OpenCode or Cursor.
 
 **file path and line number** — e.g. `src/auth/useLogin.ts:34`. Points at one exact line in one exact file. Claude

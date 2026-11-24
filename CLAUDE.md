@@ -9,8 +9,8 @@ Issues live in this repo's GitHub Issues, and answers go into issue bodies, neve
 
 ### Triage labels
 
-The five default triage labels, each named after its role. See `docs/agents/triage-labels.md`.
+This repo uses the five default triage labels unchanged. See `docs/agents/triage-labels.md`.
 
 ### Domain docs
 
-Single-context: one glossary and `docs/adr/`. See `docs/agents/domain.md`.
+The repo has one domain area, so it keeps one glossary and one decision folder, `docs/adr/`. See `docs/agents/domain.md`.

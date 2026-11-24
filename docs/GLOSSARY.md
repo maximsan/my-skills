@@ -30,7 +30,7 @@ example: the instructions, skills and agent hooks.
 file. For example: a shared lint config.
 
 **agent hook** — a script an agent runs before or after one of its actions. For example: the review gate before a
-push. A git hook is a different thing.
+push. A git hook is a different thing. See also **hook**, below.
 
 **command policy** — a rule for whether an agent may run a command, must ask first, or never runs it. For example: ask
 before `git push`.

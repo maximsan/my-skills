@@ -29,6 +29,9 @@ example: the instructions, skills and agent hooks.
 **project item** — a part of the shared set that a project adds itself, as an npm package, a reusable workflow or a
 file. For example: a shared lint config.
 
+**package skill** — a skill from someone else's package, such as Matt Pocock's skills, installed as it is and never
+edited. The owner's own skills live in `skills/`.
+
 **agent hook** — a script an agent runs before or after one of its actions. For example: the review gate before a
 push. A git hook is a different thing. See also **hook**, below.
 

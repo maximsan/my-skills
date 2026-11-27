@@ -115,13 +115,13 @@ export default [
     },
   },
   {
-    files: ["cli/run.mjs", "cli/hooks/*.mjs", "skills/*/scripts/*.mjs"],
+    files: ["cli/run.mjs", "cli/hooks/*.mjs", "skills/*/*.mjs", "skills/*/scripts/*.mjs"],
     rules: { "no-restricted-syntax": ["error", ...NO_INLINE_VALUES, ...NO_POSITIONAL_ACCESS] },
   },
   {
     // Tests keep fixture values and expected-output patterns inline, where they read best, and may ask the
     // process which operating system they run on.
-    files: ["cli/test/**/*.mjs"],
+    files: ["cli/test/**/*.mjs", "skills/**/*.test.mjs"],
     rules: { "no-restricted-syntax": "off" },
   },
 ];

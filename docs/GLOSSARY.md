@@ -18,6 +18,26 @@ Jump to:
 
 **owner** — the person these rules serve.
 
+**shared set** — the instructions, skills, hooks and tooling, which are reused by every project.
+
+**w365 workflow** — the ticket-folder way of working on the Windows work machine (investigate, plan, implement,
+review, learn). It is not used on the Macs yet.
+
+**agent-wide item** — a part of the shared set that every agent reads on its own, so a project needs no change. For
+example: the instructions, skills and agent hooks.
+
+**project item** — a part of the shared set that a project adds itself, as an npm package, a reusable workflow or a
+file. For example: a shared lint config.
+
+**package skill** — a skill from someone else's package, such as Matt Pocock's skills, installed as it is and never
+edited. The owner's own skills live in `skills/`.
+
+**agent hook** — a script an agent runs before or after one of its actions. For example: the review gate before a
+push. A git hook is a different thing. See also **hook**, below.
+
+**command policy** — a rule for whether an agent may run a command, must ask first, or never runs it. For example: ask
+before `git push`.
+
 **agent** — an AI coding tool that loads these rules, such as Claude Code, Codex, OpenCode or Cursor.
 
 **file path and line number** — e.g. `src/auth/useLogin.ts:34`. Points at one exact line in one exact file. Claude

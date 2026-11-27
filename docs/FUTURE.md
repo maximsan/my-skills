@@ -21,8 +21,9 @@ Decided:
 
 ### Next steps, in order
 
-1. **Bring in the Mac's skills and hooks.** They sit outside git today: `check-prose`, `disk-audit`, `pr-description`, `repo-checks`, `review-and-fix` and the hooks. Read each for private details first, because this repo is public. Personal settings files stay out. Bring each script's lint findings to zero with this repo's ESLint config as it moves in: most are spacing and line
-   breaks, which `eslint --fix` corrects.
+1. **Bring in the Mac's hooks.** They sit outside git today, in `~/.claude/hooks`. Read each hook for private details
+   first, because this repo is public. Bring each script's lint findings to zero with this repo's ESLint config as it
+   moves in.
 2. **Merge `my-dotfiles` into this repo, keeping its history.** That repo is public, so before
    [its open PR](https://github.com/maximsan/my-dotfiles/pull/1) merges, decide what in its `.gitconfig` stays
    private. After it merges, follow its "After merging" steps. Then merge the repo in.
